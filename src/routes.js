@@ -26,6 +26,14 @@ export const routes = [
         path: "/Categorias",
         //element: <Home />,
       },
+      {
+        //icon: <ChartBarSquareIcon {...icon} />,
+        //Modificado para aceptar el clasname de donde se renderiza
+        icon: (className) => <RectangleStackIcon className={className} />,
+        name: "Categorias1",
+        path: "/Categorias1",
+        //element: <Home />,
+      },
     ],
   },
   /*

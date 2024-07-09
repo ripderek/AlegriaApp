@@ -22,6 +22,10 @@ import {
 import { Dialog_Error, Loader, Notification } from "@/widgets"; //Importar el componente
 import { useEffect, useState } from "react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import Head from "next/head";
+import { Dialog_app } from "@/components/Elements";
+import { Crear_Categoria } from "@/components/Pages/Categorias";
+
 //import { colores_fondo } from "@/Data/colores_fondo";
 export function Lista_Categorias() {
   //Paginacion
@@ -126,7 +130,10 @@ export function Lista_Categorias() {
     pink: "bg-pink-400",
     purple: "bg-purple-500",
   };
-  const bgColorClass = "hover:" + colores_fondo[sidenavColor];
+  //const bgColorClass = "hover:" + colores_fondo[sidenavColor];
+
+  //para abrir y cerrar el dialog
+  const [Crear, SetCrear] = useState(false);
 
   return (
     <Card
@@ -134,6 +141,10 @@ export function Lista_Categorias() {
         borders ? "rounded-2xl" : "rounded-none"
       }`}
     >
+      <Head>
+        <title>Categorias</title>
+      </Head>
+      <Crear_Categoria openDialog={Crear} closeDialog={() => SetCrear(false)} />
       {load ? <Loader /> : ""}
       {error ? (
         <Dialog_Error
@@ -155,6 +166,7 @@ export function Lista_Categorias() {
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+            {/* 
             <Tooltip content="Regresar">
               <Button
                 variant="outlined"
@@ -165,17 +177,19 @@ export function Lista_Categorias() {
                 <ArrowLeftOnRectangleIcon strokeWidth={2} className="h-6 w-6" />
               </Button>
             </Tooltip>
-            <Tooltip content="Crear Nivel">
+            */}
+            <Tooltip content="Crear Categoria">
               <Button
                 className="flex items-center gap-3"
                 size="sm"
                 color="green"
-                // onClick={() => SetOpenCreateNivel(true)}
+                onClick={() => SetCrear(true)}
               >
-                <PlusCircleIcon strokeWidth={2} className="h-4 w-4" /> Crear
-                Categoria
+                <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />
+                <span className="capitalize">Crear</span>
               </Button>
             </Tooltip>
+            {/* 
             <Tooltip content="Editar">
               <Button
                 className="flex items-center gap-3"
@@ -209,6 +223,7 @@ export function Lista_Categorias() {
                 <Cog6ToothIcon strokeWidth={2} className="h-4 w-4" />
               </Button>
             </Tooltip>
+            */}
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -276,7 +291,7 @@ export function Lista_Categorias() {
                 defaultValue={TamanoCards}
                 min={1}
                 step={1}
-                max={3}
+                max={6}
                 onChange={(e) => SetTamanoCards(e.target.value)}
               />
             </div>
@@ -336,7 +351,7 @@ export function Lista_Categorias() {
           </div>
         ) : (
           <Card
-            className={`h-full w-full  p-3 ${
+            className={`h-full w-full  p-3 shadow-none ${
               borders ? "rounded-2xl" : "rounded-none"
             }`}
           >
@@ -364,7 +379,6 @@ export function Lista_Categorias() {
                   ))}
                 </tr>
               </thead>
-
               <tbody>
                 {Categorias.map(
                   (
@@ -392,7 +406,7 @@ export function Lista_Categorias() {
                     return (
                       <tr
                         key={id_categoria}
-                        className={`even:bg-blue-gray-50/50 cursor-pointer ${bgColorClass}`}
+                        className={`even:bg-blue-gray-50/50 cursor-pointer ${"hover:bg-gray-400"}`}
                       >
                         <td>
                           <Typography
