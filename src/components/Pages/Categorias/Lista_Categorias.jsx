@@ -49,12 +49,12 @@ export function Lista_Categorias() {
         process.env.NEXT_PUBLIC_ACCESLINK + "Modelo",
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          //headers: { "Content-Type": "application/json" },
           //credentials: "include",
         }
       );
       const data = await response.json();
-      //console.log(data.categorias);
+      console.log(response);
       setCategorias(data.categorias);
       //console.log(result.data);
       setLoader(false);
@@ -62,7 +62,7 @@ export function Lista_Categorias() {
       setLoader(false);
       //colocar una alerta de error cuando no se pueda inciar sesion
       setError(true);
-      setMensajeError(error.response.data.error);
+      //setMensajeError(error.response.data.error);
       console.log(error);
     }
   };
@@ -115,7 +115,7 @@ export function Lista_Categorias() {
   };
 
   //para modificar el tamano de las cards
-  const [TamanoCards, SetTamanoCards] = useState(2);
+  const [TamanoCards, SetTamanoCards] = useState(3);
   //para cambiar entre tablas o tarjetas
   const [ModoTarjeta, SetModoTarjeta] = useState(true);
   const TABLE_HEAD = ["Nombre", "Descripcion", "Fecha de Creacion"];
@@ -284,7 +284,7 @@ export function Lista_Categorias() {
               </IconButton>
             </Tooltip>
           </div>
-          {ModoTarjeta && (
+          {/*ModoTarjeta && (
             <div className="w-60 items-center mx-auto mt-2">
               Numero de tarjetas: {TamanoCards}
               <Slider
@@ -295,11 +295,11 @@ export function Lista_Categorias() {
                 onChange={(e) => SetTamanoCards(e.target.value)}
               />
             </div>
-          )}
+          )*/}
         </div>
         {/* AQUI COLOCAR LA CONDICION PARA VERLO EN MODO TARJETA O MODO TABLA */}
         {ModoTarjeta ? (
-          <div className={`grid gap-3 p-5 grid-cols-${TamanoCards}`}>
+          <div className={`grid gap-3 p-5 grid-cols-3`}>
             {Categorias.map(
               (
                 {
