@@ -1,13 +1,11 @@
 //Este es un nuevo archivo que no se habia usado en el proyecto anterior sirve como un rotueador parecedio a nodejs
 
-import { RectangleStackIcon } from "@heroicons/react/24/solid";
+import {
+  RectangleStackIcon,
+  RectangleGroupIcon,
+  CursorArrowRippleIcon,
+} from "@heroicons/react/24/solid";
 import { useMaterialTailwindController } from "@/context";
-//Importa todos los componentes que tiene la carpta MenuLateral mediante el index.js
-//import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
-
-//aqui es para particionar la barra en otra seccion
-//import { SignIn, SignUp } from "@/pages/auth";
-//import React from "react";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -26,12 +24,22 @@ export const routes = [
         path: "/Categorias",
         //element: <Home />,
       },
+
       {
         //icon: <ChartBarSquareIcon {...icon} />,
         //Modificado para aceptar el clasname de donde se renderiza
-        icon: (className) => <RectangleStackIcon className={className} />,
-        name: "Categorias1",
-        path: "/Categorias1",
+        icon: (className) => <RectangleGroupIcon className={className} />,
+        name: "Modelos",
+        path: "/Modelos",
+        //element: <Home />,
+      },
+
+      {
+        //icon: <ChartBarSquareIcon {...icon} />,
+        //Modificado para aceptar el clasname de donde se renderiza
+        icon: (className) => <CursorArrowRippleIcon className={className} />,
+        name: "Acciones",
+        path: "/Acciones",
         //element: <Home />,
       },
     ],

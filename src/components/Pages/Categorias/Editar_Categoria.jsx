@@ -1,9 +1,8 @@
-// Crear_Categoria.js
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog_app } from "@/components/Elements";
 import { AiOutlineUpload } from "react-icons/ai";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { Button } from "@material-tailwind/react";
+import { Button, Checkbox } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
 import Lottie from "lottie-react";
@@ -12,31 +11,62 @@ import anim from "../../../../public/anim/picture.json";
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
 
-export function Crear_Categoria({ openDialog, closeDialog }) {
+export function Editar_Categoria({
+  openDialog,
+  closeDialog,
+  IdCategoriaEditar,
+}) {
   const [load, setLoader] = useState(false);
-
-  //color
-  //aqui por ejemplo si se quiere editar se puede recibir el color actual
-  const [color, setColor] = useState("#ffffff");
-
-  //estado para almacenar lo del formulario
-  const [Categoria, SetCategoria] = useState({ Nombre: "", Descripcion: "" });
-  const HandleChange = (e) => {
-    SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
-    console.log(Categoria);
-  };
   //imagen
   const fileInputRef = useRef(null);
   //img preview
   const [fileP, setFileP] = useState();
   const [base64Image, setBase64Image] = useState("");
+  const [color, setColor] = useState("#ffffff");
+  //estado para almacenar lo del formulario
+  const [Categoria, SetCategoria] = useState({ Nombre: "", Descripcion: "" });
+  const [Estado, SetEstado] = useState(true);
+  //hacer un useEffect para poder obtener los datos de la categoria a editar
+  useEffect(() => {
+    ObtenerDatosCategoria();
+  }, []);
+  const ObtenerDatosCategoria = async () => {
+    setLoader(true);
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/" + IdCategoriaEditar,
+        {
+          method: "GET",
+          //headers: { "Content-Type": "application/json" },
+          //credentials: "include",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      SetCategoria(data);
+      setColor(`#${data.color}`);
+      SetEstado(data.activo);
+      //console.log(result.data);
+      setLoader(false);
+    } catch (error) {
+      alert("Error");
+      setLoader(false);
+      //colocar una alerta de error cuando no se pueda inciar sesion
+      //setError(true);
+      //setMensajeError(error.response.data.error);
+      console.log(error);
+    }
+  };
+  const HandleChange = (e) => {
+    SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+    //console.log(Categoria);
+  };
 
   const ImagePreview = (e) => {
     try {
       setFileP(URL.createObjectURL(e.target.files[0]));
 
       const selectedFile = e.target.files[0];
-      //setFile(selectedFile);
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = () => {
@@ -56,22 +86,25 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
     }
   };
   //enviar a la API a crear la categoria
-  const Crear_categoria = async (e) => {
+  const EditarCategoria = async (e) => {
     e.preventDefault();
-
-    console.log(base64Image);
-    //const byteFile = await getAsByteArray(file);
-
     //console.log(byteFile);
     setLoader(true);
     try {
-      const result = await axios.post(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/insertar",
+      const result = await axios.put(
+        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/modificar",
         {
-          Nombre: Categoria.Nombre,
-          Descripcion: Categoria.Descripcion,
-          Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
-          Imagen: base64Image,
+          nombre: Categoria.nombre,
+          descripcion: Categoria.descripcion,
+          color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+          imagen: base64Image,
+          //imagen: "pinche Maholy",
+          id_categoria: IdCategoriaEditar,
+          id_categoria_padre: Categoria.id_categoria_padre,
+          nivel: Categoria.nivel,
+          activo: Estado,
+          acciones: Categoria.acciones,
+          subcategorias: Categoria.subcategorias,
         },
         {
           headers: {
@@ -96,13 +129,16 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
     setColor(value.toHexString());
     //console.log(type);
   };
+  const handleChecked = (event) => {
+    SetEstado(event.target.checked);
+  };
   return (
     <>
       {load ? <Loader /> : ""}
       <Dialog_app
         open={openDialog}
         close={closeDialog}
-        title="Crear Categoria"
+        title={`Editar Categoria`}
         size="lg"
       >
         {/* Aquí va el cuerpo del diálogo */}
@@ -111,7 +147,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
           <div key={1}>
             <form
               className="flex flex-col gap-4 h-96 overflow-y-auto mb-4"
-              onSubmit={Crear_categoria}
+              onSubmit={EditarCategoria}
               id="FormularioCrearCategoria"
             >
               <div className="mb-4">
@@ -127,7 +163,8 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   type="text"
                   placeholder="Nombre de la categoría"
                   onChange={HandleChange}
-                  name="Nombre"
+                  name="nombre"
+                  value={Categoria.nombre}
                 />
               </div>
               <div className="mb-4">
@@ -142,7 +179,8 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   id="descripcion"
                   placeholder="Descripción de la categoría"
                   onChange={HandleChange}
-                  name="Descripcion"
+                  name="descripcion"
+                  value={Categoria.descripcion}
                 />
               </div>
 
@@ -164,8 +202,17 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                 />
               </div>
               <div className="mx-auto mb-5">
-                <ColorPicker onChange={handleColor} defaultValue={color} />
+                <ColorPicker
+                  onChange={handleColor}
+                  defaultValue={color}
+                  value={color}
+                />
               </div>
+              <Checkbox
+                label="Activo"
+                checked={Estado}
+                onChange={handleChecked}
+              />
             </form>
           </div>
           {/* DIV DERECHO PARA LA FOTO */}
@@ -188,11 +235,15 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
               </Button>
             </div>
             {/*   <Lottie animationData={anim} className="w-32 mx-auto" /> */}
-            {!fileP ? (
-              <Lottie animationData={anim} className="h-40 mt-5 mx-auto" />
-            ) : (
+            {fileP ? (
               <img
                 src={fileP}
+                alt="Imagen"
+                className="mt-3 h-64 w-64  mx-auto"
+              />
+            ) : (
+              <img
+                src={process.env.NEXT_PUBLIC_ACCESLINK + Categoria.ruta_imagen}
                 alt="Imagen"
                 className="mt-3 h-64 w-64  mx-auto"
               />
@@ -214,7 +265,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
             form="FormularioCrearCategoria"
           >
             <PlusCircleIcon className="h-4 w-4" />
-            <span className="capitalize">Crear</span>
+            <span className="capitalize">Guardar</span>
           </Button>
         </div>
       </Dialog_app>
@@ -222,4 +273,4 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
   );
 }
 
-export default Crear_Categoria;
+export default Editar_Categoria;

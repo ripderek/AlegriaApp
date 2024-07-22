@@ -1,4 +1,3 @@
-// Crear_Categoria.js
 import { useState, useRef } from "react";
 import { Dialog_app } from "@/components/Elements";
 import { AiOutlineUpload } from "react-icons/ai";
@@ -11,8 +10,9 @@ import anim from "../../../../public/anim/picture.json";
 /* PARA EL SELECTOR DE COLORES */
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
+import Head from "next/head";
 
-export function Crear_Categoria({ openDialog, closeDialog }) {
+export function Crear_Accion({ openDialog, closeDialog }) {
   const [load, setLoader] = useState(false);
 
   //color
@@ -98,11 +98,14 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
   };
   return (
     <>
+      <Head>
+        <title>Crear Accion</title>
+      </Head>
       {load ? <Loader /> : ""}
       <Dialog_app
         open={openDialog}
         close={closeDialog}
-        title="Crear Categoria"
+        title="Crear Accion"
         size="lg"
       >
         {/* Aquí va el cuerpo del diálogo */}
@@ -222,4 +225,4 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
   );
 }
 
-export default Crear_Categoria;
+export default Crear_Accion;

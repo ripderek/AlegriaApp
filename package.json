@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.1.1",
     "@material-tailwind/react": "^2.1.8",
+    "@rc-component/color-picker": "^1.8.1",
     "@react-oauth/google": "^0.12.1",
     "axios": "^1.6.5",
     "chart.js": "^4.4.1",
