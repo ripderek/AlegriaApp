@@ -25,14 +25,11 @@ import { useEffect, useState } from "react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import Head from "next/head";
 import { Dialog_app } from "@/components/Elements";
-import {
-  Crear_Categoria,
-  Editar_Categoria,
-} from "@/components/Pages/Categorias";
+import { Crear_Accion } from "@/components/Pages/Acciones";
 import axios from "axios"; // para realizar las peticiones
 
 //import { colores_fondo } from "@/Data/colores_fondo";
-export function Lista_Categorias() {
+export function Lista_Acciones() {
   //Paginacion
   const [currentPage, setCurrentPage] = useState(1);
   const [value, setValue] = useState("4");
@@ -42,16 +39,16 @@ export function Lista_Categorias() {
   const [load, setLoader] = useState(false);
 
   /*LO QUE ESTOY USANDO NUEVO EN ESTE FORMULARIO */
-  const [Categorias, setCategorias] = useState([]);
+  const [Acciones, setAcciones] = useState([]);
   useEffect(() => {
-    ObtenerCategorias();
+    ObtenerAcciones();
   }, []);
   //funcion para cargar los niveles que tiene una seccion
-  const ObtenerCategorias = async () => {
+  const ObtenerAcciones = async () => {
     setLoader(true);
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/listar",
+        process.env.NEXT_PUBLIC_ACCESLINK + "acciones/listar",
         {
           method: "GET",
           //headers: { "Content-Type": "application/json" },
@@ -60,7 +57,7 @@ export function Lista_Categorias() {
       );
       const data = await response.json();
       console.log(data);
-      setCategorias(data);
+      setAcciones(data);
       //console.log(result.data);
       setLoader(false);
     } catch (error) {
@@ -99,13 +96,13 @@ export function Lista_Categorias() {
   };
 
   // Obtener el total de páginas
-  const totalNiveles = Categorias.length;
+  const totalNiveles = Acciones.length;
   const totalPages = Math.ceil(totalNiveles / itemsPorPag);
 
   // Calcular el índice del primer y último formulario en la página actual
   const indexOfLastItem = currentPage * itemsPorPag;
   const indexOfFirstItem = indexOfLastItem - itemsPorPag;
-  const currentItems = Categorias.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = Acciones.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -148,14 +145,14 @@ export function Lista_Categorias() {
     SetEditar(true);
   };
   //funcion para eliminar la categoria
-  const EliminarCategoria = async (idCategoriaELiminar) => {
-    //alert(idCategoriaELiminar);
+  const EliminarAccion = async (id_accion_eliminar) => {
+    //alert(id_accion_eliminar);
     setLoader(true);
     try {
       const result = await axios.delete(
         process.env.NEXT_PUBLIC_ACCESLINK +
-          "categorias/eliminar/" +
-          idCategoriaELiminar,
+          "acciones/eliminar/" +
+          id_accion_eliminar,
 
         {
           headers: {
@@ -165,7 +162,7 @@ export function Lista_Categorias() {
         }
       );
       setLoader(false);
-      ObtenerCategorias();
+      ObtenerAcciones();
     } catch (error) {
       alert("Error");
       //colocar una alerta de error
@@ -182,21 +179,21 @@ export function Lista_Categorias() {
       }`}
     >
       <Head>
-        <title>Categorias</title>
+        <title>Acciones</title>
       </Head>
       {Crear && (
-        <Crear_Categoria
+        <Crear_Accion
           openDialog={Crear}
-          closeDialog={() => (SetCrear(false), ObtenerCategorias())}
+          closeDialog={() => (SetCrear(false), ObtenerAcciones())}
         />
       )}
-      {Editar && (
+      {/*Editar && (
         <Editar_Categoria
           openDialog={Editar}
-          closeDialog={() => (SetEditar(false), ObtenerCategorias())}
+          closeDialog={() => (SetEditar(false), ObtenerAcciones())}
           IdCategoriaEditar={IdCategoriaSeleccionada}
         />
-      )}
+      )*/}
       {load ? <Loader /> : ""}
       {error ? (
         <Dialog_Error
@@ -211,10 +208,10 @@ export function Lista_Categorias() {
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Lista de categorias
+              Lista de acciones
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Las siguientes categorias se encuentran disponibles
+              Las siguientes acciones se encuentran disponibles
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -299,9 +296,9 @@ export function Lista_Categorias() {
         </div>
       </CardHeader>
       <CardBody className="px-0">
-        {Categorias.length == 0 ? (
+        {Acciones.length == 0 ? (
           <div className="mx-auto items-center text-center font-bold text-2xl">
-            No hay categorias
+            No hay acciones
           </div>
         ) : (
           ""
@@ -311,8 +308,8 @@ export function Lista_Categorias() {
           color="blue-gray"
           className="font-normal leading-none opacity-70 ml-5"
         >
-          Numero de categorias:
-          <span className="font-bold">{Categorias.length}</span>
+          Numero de acciones:
+          <span className="font-bold">{Acciones.length}</span>
         </Typography>
         <div className="flex flex-row ">
           <div className="p-2 ml-4 gap-9 ">
@@ -352,26 +349,24 @@ export function Lista_Categorias() {
         {/* AQUI COLOCAR LA CONDICION PARA VERLO EN MODO TARJETA O MODO TABLA */}
         {ModoTarjeta ? (
           <div className={`grid gap-3 p-5 grid-cols-3`}>
-            {Categorias.map(
+            {Acciones.map(
               (
                 {
+                  id_accion,
                   id_categoria,
-                  id_categoria_padre,
-                  nivel,
-                  nombre,
+                  accion,
                   ruta_imagen,
+                  ruta_local,
                   color,
                   descripcion,
                   activo,
                   fecha_creacion,
                   fecha_modificacion,
-                  acciones,
-                  subcategorias,
                 },
                 index
               ) => (
                 <div
-                  key={id_categoria}
+                  key={id_accion}
                   className={`${
                     borders ? "rounded-2xl" : "rounded-none"
                   }  shadow-sm   hover:border-4 ${
@@ -387,7 +382,7 @@ export function Lista_Categorias() {
                           className="w-full font-bold text-xl 	text-blue-gray-800 "
                           style={{ backgroundColor: `#${color}` }}
                           disabled
-                          value={nombre}
+                          value={accion}
                         />
                         <img
                           src={process.env.NEXT_PUBLIC_ACCESLINK + ruta_imagen}
@@ -401,7 +396,7 @@ export function Lista_Categorias() {
                         <IconButton
                           color="gray"
                           variant="gradient"
-                          onClick={() => AbrirEditorCategoria(id_categoria)}
+                          onClick={() => AbrirEditorCategoria(id_accion)}
                         >
                           <PencilIcon className="text-white h-8" />
                         </IconButton>
@@ -411,7 +406,7 @@ export function Lista_Categorias() {
                           color="red"
                           variant="gradient"
                           className="ml-1"
-                          onClick={() => EliminarCategoria(id_categoria)}
+                          onClick={() => EliminarAccion(id_accion)}
                         >
                           <TrashIcon className="text-white h-8" />
                         </IconButton>
@@ -453,32 +448,30 @@ export function Lista_Categorias() {
                 </tr>
               </thead>
               <tbody>
-                {Categorias.map(
+                {Acciones.map(
                   (
                     {
+                      id_accion,
                       id_categoria,
-                      id_categoria_padre,
-                      nivel,
-                      nombre,
+                      accion,
                       ruta_imagen,
+                      ruta_local,
                       color,
                       descripcion,
                       activo,
                       fecha_creacion,
                       fecha_modificacion,
-                      acciones,
-                      subcategorias,
                     },
                     index
                   ) => {
-                    const isLast = index === Categorias.length - 1;
+                    const isLast = index === Acciones.length - 1;
                     const classes = isLast
                       ? "p-4"
                       : "p-4 border-b border-blue-gray-50";
 
                     return (
                       <tr
-                        key={id_categoria}
+                        key={id_accion}
                         className={`even:bg-blue-gray-50/50 cursor-pointer ${"hover:bg-gray-400"}`}
                       >
                         <td>
@@ -487,7 +480,7 @@ export function Lista_Categorias() {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {nombre}
+                            {accion}
                           </Typography>
                         </td>
                         <td className={`${classes} `}>
@@ -533,4 +526,4 @@ export function Lista_Categorias() {
     </Card>
   );
 }
-export default Lista_Categorias;
+export default Lista_Acciones;

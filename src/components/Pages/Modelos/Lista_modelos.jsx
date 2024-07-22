@@ -1,13 +1,12 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
+  PencilIcon,
   UsersIcon,
   ArrowLeftOnRectangleIcon,
   PlusCircleIcon,
   Cog6ToothIcon,
   ListBulletIcon,
   Squares2X2Icon,
-  PencilIcon,
-  TrashIcon,
 } from "@heroicons/react/24/solid";
 import {
   Card,
@@ -25,14 +24,10 @@ import { useEffect, useState } from "react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import Head from "next/head";
 import { Dialog_app } from "@/components/Elements";
-import {
-  Crear_Categoria,
-  Editar_Categoria,
-} from "@/components/Pages/Categorias";
-import axios from "axios"; // para realizar las peticiones
+import { Crear_Categoria } from "@/components/Pages/Categorias";
 
 //import { colores_fondo } from "@/Data/colores_fondo";
-export function Lista_Categorias() {
+export function Lista_modelos() {
   //Paginacion
   const [currentPage, setCurrentPage] = useState(1);
   const [value, setValue] = useState("4");
@@ -51,7 +46,7 @@ export function Lista_Categorias() {
     setLoader(true);
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/listar",
+        process.env.NEXT_PUBLIC_ACCESLINK + "Modelo",
         {
           method: "GET",
           //headers: { "Content-Type": "application/json" },
@@ -59,8 +54,8 @@ export function Lista_Categorias() {
         }
       );
       const data = await response.json();
-      console.log(data);
-      setCategorias(data);
+      console.log(response);
+      setCategorias(data.categorias);
       //console.log(result.data);
       setLoader(false);
     } catch (error) {
@@ -139,42 +134,7 @@ export function Lista_Categorias() {
 
   //para abrir y cerrar el dialog
   const [Crear, SetCrear] = useState(false);
-  //para abrir el editor de la categoria
-  const [Editar, SetEditar] = useState(false);
-  //id de la categoria seleccionada
-  const [IdCategoriaSeleccionada, setIdCategoriaSeleccionada] = useState(0);
-  const AbrirEditorCategoria = (id) => {
-    setIdCategoriaSeleccionada(id);
-    SetEditar(true);
-  };
-  //funcion para eliminar la categoria
-  const EliminarCategoria = async (idCategoriaELiminar) => {
-    //alert(idCategoriaELiminar);
-    setLoader(true);
-    try {
-      const result = await axios.delete(
-        process.env.NEXT_PUBLIC_ACCESLINK +
-          "categorias/eliminar/" +
-          idCategoriaELiminar,
 
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: false,
-        }
-      );
-      setLoader(false);
-      ObtenerCategorias();
-    } catch (error) {
-      alert("Error");
-      //colocar una alerta de error
-      setLoader(false);
-      //setMensajeError(error.response.data.error);
-      //setError(true);
-      console.log(error);
-    }
-  };
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -182,19 +142,12 @@ export function Lista_Categorias() {
       }`}
     >
       <Head>
-        <title>Categorias</title>
+        <title>Modelos</title>
       </Head>
       {Crear && (
         <Crear_Categoria
           openDialog={Crear}
-          closeDialog={() => (SetCrear(false), ObtenerCategorias())}
-        />
-      )}
-      {Editar && (
-        <Editar_Categoria
-          openDialog={Editar}
-          closeDialog={() => (SetEditar(false), ObtenerCategorias())}
-          IdCategoriaEditar={IdCategoriaSeleccionada}
+          closeDialog={() => SetCrear(false)}
         />
       )}
       {load ? <Loader /> : ""}
@@ -211,10 +164,10 @@ export function Lista_Categorias() {
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Lista de categorias
+              Lista de modelos
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Las siguientes categorias se encuentran disponibles
+              Las siguientes modelos se encuentran disponibles
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -311,7 +264,7 @@ export function Lista_Categorias() {
           color="blue-gray"
           className="font-normal leading-none opacity-70 ml-5"
         >
-          Numero de categorias:
+          Numero de modelos:
           <span className="font-bold">{Categorias.length}</span>
         </Typography>
         <div className="flex flex-row ">
@@ -374,7 +327,7 @@ export function Lista_Categorias() {
                   key={id_categoria}
                   className={`${
                     borders ? "rounded-2xl" : "rounded-none"
-                  }  shadow-sm   hover:border-4 ${
+                  }  shadow-sm  cursor-pointer hover:border-4 ${
                     sidenavColors[sidenavColor]
                   }  ${shadows[sidenavColor]}`}
                   // onClick={() => AbrirPreguntas(r_id_nivel, r_nivel)}
@@ -395,27 +348,6 @@ export function Lista_Categorias() {
                           className="mt-3 h-52 w-auto mx-auto"
                         />
                       </div>
-                    </div>
-                    <div className="flex justify-end items-center h-full">
-                      <Tooltip content="Editar">
-                        <IconButton
-                          color="gray"
-                          variant="gradient"
-                          onClick={() => AbrirEditorCategoria(id_categoria)}
-                        >
-                          <PencilIcon className="text-white h-8" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip content="Eliminar">
-                        <IconButton
-                          color="red"
-                          variant="gradient"
-                          className="ml-1"
-                          onClick={() => EliminarCategoria(id_categoria)}
-                        >
-                          <TrashIcon className="text-white h-8" />
-                        </IconButton>
-                      </Tooltip>
                     </div>
                   </div>
                 </div>
@@ -533,4 +465,4 @@ export function Lista_Categorias() {
     </Card>
   );
 }
-export default Lista_Categorias;
+export default Lista_modelos;
