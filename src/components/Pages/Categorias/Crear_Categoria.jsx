@@ -14,7 +14,6 @@ import "@rc-component/color-picker/assets/index.css";
 
 export function Crear_Categoria({ openDialog, closeDialog }) {
   const [load, setLoader] = useState(false);
-
   //color
   //aqui por ejemplo si se quiere editar se puede recibir el color actual
   const [color, setColor] = useState("#ffffff");
