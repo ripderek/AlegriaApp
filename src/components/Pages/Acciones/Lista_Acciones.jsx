@@ -44,6 +44,8 @@ export function Lista_Acciones() {
     ObtenerAcciones();
   }, []);
   //funcion para cargar los niveles que tiene una seccion
+  //esta es la nueva ruta
+  //https://aplicaciones.uteq.edu.ec:9022/categorias/24
   const ObtenerAcciones = async () => {
     setLoader(true);
     try {
@@ -146,7 +148,7 @@ export function Lista_Acciones() {
   };
   //funcion para eliminar la categoria
   const EliminarAccion = async (id_accion_eliminar) => {
-    //alert(id_accion_eliminar);
+    alert(id_accion_eliminar);
     setLoader(true);
     try {
       const result = await axios.delete(

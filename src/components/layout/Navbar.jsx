@@ -108,9 +108,11 @@ export function Navbar_app({ user_name, titulo }) {
           </Breadcrumbs>
         </div>
         <div className="flex items-center">
+          {/*
           <div className="mr-auto md:mr-4 md:w-56">
             <Input label="Search" />
           </div>
+           */}
           <IconButton
             variant="text"
             color="blue-gray"

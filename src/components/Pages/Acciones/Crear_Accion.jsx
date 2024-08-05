@@ -61,17 +61,23 @@ export function Crear_Accion({ openDialog, closeDialog }) {
 
     console.log(base64Image);
     //const byteFile = await getAsByteArray(file);
-
+    console.log({
+      Accion: Categoria.Nombre,
+      Descripcion: Categoria.Descripcion,
+      Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+      Imagen: base64Image,
+    });
     //console.log(byteFile);
     setLoader(true);
     try {
       const result = await axios.post(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/insertar",
+        process.env.NEXT_PUBLIC_ACCESLINK + "acciones/insertar",
         {
-          Nombre: Categoria.Nombre,
+          Accion: Categoria.Nombre,
           Descripcion: Categoria.Descripcion,
           Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
           Imagen: base64Image,
+          id_categoria: 81,
         },
         {
           headers: {
@@ -83,12 +89,13 @@ export function Crear_Accion({ openDialog, closeDialog }) {
       closeDialog();
       setLoader(false);
     } catch (error) {
+      console.log("Error");
+      console.log(error);
       alert("Error");
       //colocar una alerta de error
       setLoader(false);
       //setMensajeError(error.response.data.error);
       //setError(true);
-      console.log(error);
     }
   };
   const handleColor = (value, type) => {

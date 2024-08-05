@@ -28,6 +28,7 @@ import { Dialog_app } from "@/components/Elements";
 import {
   Crear_Categoria,
   Editar_Categoria,
+  Buscar_Categoria,
 } from "@/components/Pages/Categorias";
 import axios from "axios"; // para realizar las peticiones
 
@@ -175,6 +176,41 @@ export function Lista_Categorias() {
       console.log(error);
     }
   };
+  //para el buscador
+  const [OpenBuscador, setOpenBuscador] = useState(false);
+  //funcion que activa la busqueda
+  const RealizarBusqueda = async (CuerpoBusqueda) => {
+    // alert("Realizando Busqueda");
+    //console.log(CuerpoBusqueda);
+    //alert(idCategoriaELiminar);
+    setOpenBuscador(false);
+    setLoader(true);
+    try {
+      const result = await axios.post(
+        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/buscar",
+        CuerpoBusqueda,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: false,
+        }
+      );
+      // const data = await result;
+      // console.log("Resultado Busqueda");
+      /// console.log(result.data);
+      setCategorias(result.data);
+      setLoader(false);
+      //ObtenerCategorias();
+    } catch (error) {
+      alert("Error");
+      //colocar una alerta de error
+      setLoader(false);
+      //setMensajeError(error.response.data.error);
+      //setError(true);
+      console.log(error);
+    }
+  };
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -203,6 +239,15 @@ export function Lista_Categorias() {
           mensaje={mensajeError}
           titulo="Error en la peticion"
           cerrar={() => setError(false)}
+        />
+      ) : (
+        ""
+      )}
+      {OpenBuscador ? (
+        <Buscar_Categoria
+          closeBuscador={() => setOpenBuscador(false)}
+          Titulo={"Buscar Categoria"}
+          RealizarBusqueda={RealizarBusqueda}
         />
       ) : (
         ""
@@ -239,6 +284,17 @@ export function Lista_Categorias() {
               >
                 <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />
                 <span className="capitalize">Crear</span>
+              </Button>
+            </Tooltip>
+            <Tooltip content="Buscar Categoria">
+              <Button
+                className="flex items-center gap-3"
+                size="sm"
+                color="amber"
+                onClick={() => setOpenBuscador(true)}
+              >
+                <MagnifyingGlassIcon strokeWidth={2} className="h-4 w-4" />
+                <span className="capitalize">Buscar</span>
               </Button>
             </Tooltip>
             {/* 
