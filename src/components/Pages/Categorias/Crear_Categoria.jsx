@@ -127,6 +127,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   placeholder="Nombre de la categoría"
                   onChange={HandleChange}
                   name="Nombre"
+                  maxLength={30}
                 />
               </div>
               <div className="mb-4">
@@ -142,6 +143,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   placeholder="Descripción de la categoría"
                   onChange={HandleChange}
                   name="Descripcion"
+                  maxLength={500}
                 />
               </div>
 

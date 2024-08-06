@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog_app } from "@/components/Elements";
 import { AiOutlineUpload } from "react-icons/ai";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { Button } from "@material-tailwind/react";
+import { Button, Checkbox } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
 import Lottie from "lottie-react";
@@ -10,33 +10,66 @@ import anim from "../../../../public/anim/picture.json";
 /* PARA EL SELECTOR DE COLORES */
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
-import Head from "next/head";
 
-export function Crear_Accion({ openDialog, closeDialog, categoria }) {
+export function Editar_Accion({
+  openDialog,
+  closeDialog,
+  IdAccionEditar,
+  IDCategoria,
+}) {
   const [load, setLoader] = useState(false);
-
-  //color
-  //aqui por ejemplo si se quiere editar se puede recibir el color actual
-  const [color, setColor] = useState("#ffffff");
-
-  //estado para almacenar lo del formulario
-  const [Categoria, SetCategoria] = useState({ Nombre: "", Descripcion: "" });
-  const HandleChange = (e) => {
-    SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
-    console.log(Categoria);
-  };
   //imagen
   const fileInputRef = useRef(null);
   //img preview
   const [fileP, setFileP] = useState();
   const [base64Image, setBase64Image] = useState("");
+  const [color, setColor] = useState("#ffffff");
+  //estado para almacenar lo del formulario
+  const [Categoria, SetCategoria] = useState({ accion: "", Descripcion: "" });
+  const [Estado, SetEstado] = useState(true);
+  //hacer un useEffect para poder obtener los datos de la categoria a editar
+  useEffect(() => {
+    //alert(IdAccionEditar);
+    ObtenerDatosAcciones();
+  }, []);
+  const ObtenerDatosAcciones = async () => {
+    //alert(IdAccionEditar);
+    setLoader(true);
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_ACCESLINK + "acciones/" + IdAccionEditar,
+        {
+          method: "GET",
+          //headers: { "Content-Type": "application/json" },
+          //credentials: "include",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      SetCategoria(data);
+      setColor(`#${data.color}`);
+      SetEstado(data.activo);
+      //console.log(result.data);
+      setLoader(false);
+    } catch (error) {
+      alert("Error");
+      setLoader(false);
+      //colocar una alerta de error cuando no se pueda inciar sesion
+      //setError(true);
+      //setMensajeError(error.response.data.error);
+      console.log(error);
+    }
+  };
+  const HandleChange = (e) => {
+    SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+    //console.log(Categoria);
+  };
 
   const ImagePreview = (e) => {
     try {
       setFileP(URL.createObjectURL(e.target.files[0]));
 
       const selectedFile = e.target.files[0];
-      //setFile(selectedFile);
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = () => {
@@ -56,30 +89,27 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
     }
   };
   //enviar a la API a crear la categoria
-  const Crear_categoria = async (e) => {
+  const EditarCategoria = async (e) => {
     e.preventDefault();
 
-    console.log({
-      Accion: Categoria.Nombre,
-      Descripcion: Categoria.Descripcion,
-      Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
-      Imagen: base64Image,
-      id_categoria: parseInt(categoria),
-    });
-    //const byteFile = await getAsByteArray(file);
-
-    //console.log(byteFile);
-    //alert(categoria);
     setLoader(true);
     try {
-      const result = await axios.post(
-        process.env.NEXT_PUBLIC_ACCESLINK + "acciones/insertar",
+      const result = await axios.put(
+        process.env.NEXT_PUBLIC_ACCESLINK + "acciones/modificar",
         {
-          Accion: Categoria.Nombre,
-          Descripcion: Categoria.Descripcion,
-          Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
-          Imagen: base64Image,
-          id_categoria: parseInt(categoria),
+          accion: Categoria.accion,
+          descripcion: Categoria.descripcion,
+          color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+          imagen: base64Image,
+          //imagen: "",
+          //imagen: "pinche Maholy",
+          id_accion: IdAccionEditar,
+          //id_categoria_padre: Categoria.id_categoria_padre,
+          // nivel: Categoria.nivel,
+          activo: Estado,
+          //acciones: Categoria.acciones,
+          //subcategorias: Categoria.subcategorias,
+          id_categoria: parseInt(IDCategoria),
         },
         {
           headers: {
@@ -91,13 +121,12 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
       closeDialog();
       setLoader(false);
     } catch (error) {
-      console.log("Error");
-      console.log(error);
       alert("Error");
       //colocar una alerta de error
       setLoader(false);
       //setMensajeError(error.response.data.error);
       //setError(true);
+      console.log(error);
     }
   };
   const handleColor = (value, type) => {
@@ -105,17 +134,16 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
     setColor(value.toHexString());
     //console.log(type);
   };
+  const handleChecked = (event) => {
+    SetEstado(event.target.checked);
+  };
   return (
     <>
-      <Head>
-        <title>Crear Accion</title>
-      </Head>
       {load ? <Loader /> : ""}
-
       <Dialog_app
         open={openDialog}
         close={closeDialog}
-        title="Crear Accion"
+        title={`Editar Accion`}
         size="lg"
       >
         {/* Aquí va el cuerpo del diálogo */}
@@ -124,7 +152,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
           <div key={1}>
             <form
               className="flex flex-col gap-4 h-96 overflow-y-auto mb-4"
-              onSubmit={Crear_categoria}
+              onSubmit={EditarCategoria}
               id="FormularioCrearCategoria"
             >
               <div className="mb-4">
@@ -138,10 +166,10 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="categoria"
                   type="text"
-                  placeholder="Nombre de la categoría"
+                  placeholder="Nombre de la accion"
                   onChange={HandleChange}
-                  name="Nombre"
-                  maxLength={30}
+                  name="accion"
+                  value={Categoria.accion}
                 />
               </div>
               <div className="mb-4">
@@ -156,8 +184,8 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
                   id="descripcion"
                   placeholder="Descripción de la categoría"
                   onChange={HandleChange}
-                  name="Descripcion"
-                  maxLength={500}
+                  name="descripcion"
+                  value={Categoria.descripcion}
                 />
               </div>
 
@@ -179,8 +207,17 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
                 />
               </div>
               <div className="mx-auto mb-5">
-                <ColorPicker onChange={handleColor} defaultValue={color} />
+                <ColorPicker
+                  onChange={handleColor}
+                  defaultValue={color}
+                  value={color}
+                />
               </div>
+              <Checkbox
+                label="Activo"
+                checked={Estado}
+                onChange={handleChecked}
+              />
             </form>
           </div>
           {/* DIV DERECHO PARA LA FOTO */}
@@ -203,11 +240,15 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
               </Button>
             </div>
             {/*   <Lottie animationData={anim} className="w-32 mx-auto" /> */}
-            {!fileP ? (
-              <Lottie animationData={anim} className="h-40 mt-5 mx-auto" />
-            ) : (
+            {fileP ? (
               <img
                 src={fileP}
+                alt="Imagen"
+                className="mt-3 h-64 w-64  mx-auto"
+              />
+            ) : (
+              <img
+                src={process.env.NEXT_PUBLIC_ACCESLINK + Categoria.ruta_imagen}
                 alt="Imagen"
                 className="mt-3 h-64 w-64  mx-auto"
               />
@@ -229,7 +270,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
             form="FormularioCrearCategoria"
           >
             <PlusCircleIcon className="h-4 w-4" />
-            <span className="capitalize">Crear</span>
+            <span className="capitalize">Guardar</span>
           </Button>
         </div>
       </Dialog_app>
@@ -237,4 +278,4 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
   );
 }
 
-export default Crear_Accion;
+export default Editar_Accion;

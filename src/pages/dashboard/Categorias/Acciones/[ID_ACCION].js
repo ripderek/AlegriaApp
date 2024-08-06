@@ -5,11 +5,19 @@ import { BarraNavegacion, Navbar_app, Configurator } from "@/components/layout";
 //rutas que va a tener la barra lateral
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
-import React from "react";
-import { Lista_modelos } from "@/components/Pages/Modelos";
-export default function Modelos() {
+import { useEffect, useState } from "react";
+import { Lista_Acciones } from "@/components/Pages/Acciones";
+import { useRouter } from "next/router";
+export default function Acciones() {
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType, sidenavColor, change_type_bar, borders } = controller;
+  //Para obtener la categoria desde el queryURL
+  const router = useRouter();
+  const { ID_ACCION } = router.query;
+  const [idCat, setIDCategoria] = useState();
+  useEffect(() => {
+    setIDCategoria(ID_ACCION);
+  }, [ID_ACCION]);
 
   return (
     <div className=" min-h-screen bg-blue-gray-50/50">
@@ -26,6 +34,7 @@ export default function Modelos() {
       */}
       <div className={`p-4  ${change_type_bar ? "xl:ml-32" : "xl:ml-56"}`}>
         {/* <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} /> */}
+
         <Configurator />
         <IconButton
           size="lg"
@@ -37,9 +46,11 @@ export default function Modelos() {
           <Cog6ToothIcon className="h-5 w-5" />
         </IconButton>
         <div className="mt-2">
-          <Lista_modelos />
+          <Lista_Acciones idCategoria={idCat} />
         </div>
       </div>
     </div>
   );
 }
+///src/layout/dashboard.jsx
+//export default Home;

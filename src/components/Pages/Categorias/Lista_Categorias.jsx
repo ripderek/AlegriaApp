@@ -426,55 +426,67 @@ export function Lista_Categorias() {
                 },
                 index
               ) => (
-                <div
-                  key={id_categoria}
-                  className={`${
-                    borders ? "rounded-2xl" : "rounded-none"
-                  }  shadow-sm   hover:border-4 ${
-                    sidenavColors[sidenavColor]
-                  }  ${shadows[sidenavColor]}`}
-                  // onClick={() => AbrirPreguntas(r_id_nivel, r_nivel)}
-                  style={{ backgroundColor: `#${color}` }}
-                >
-                  <div className="bg-zinc-900 rounded-2xl">
-                    <div className="mx-auto">
-                      <div className="w-full p-4 text-center">
-                        <input
-                          className="w-full font-bold text-xl 	text-blue-gray-800 "
-                          style={{ backgroundColor: `#${color}` }}
-                          disabled
-                          value={nombre}
-                        />
-                        <img
-                          src={process.env.NEXT_PUBLIC_ACCESLINK + ruta_imagen}
-                          alt={descripcion}
-                          className="mt-3 h-52 w-auto mx-auto"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end items-center h-full">
-                      <Tooltip content="Editar">
-                        <IconButton
-                          color="gray"
-                          variant="gradient"
-                          onClick={() => AbrirEditorCategoria(id_categoria)}
-                        >
-                          <PencilIcon className="text-white h-8" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip content="Eliminar">
-                        <IconButton
-                          color="red"
-                          variant="gradient"
-                          className="ml-1"
-                          onClick={() => EliminarCategoria(id_categoria)}
-                        >
-                          <TrashIcon className="text-white h-8" />
-                        </IconButton>
-                      </Tooltip>
+                <Tooltip content="Ver Acciones" key={id_categoria}>
+                  <div
+                    key={id_categoria}
+                    className={`${
+                      borders ? "rounded-2xl" : "rounded-none"
+                    }  shadow-sm   hover:border-4 ${
+                      sidenavColors[sidenavColor]
+                    }  ${shadows[sidenavColor]}`}
+                    // onClick={() => AbrirPreguntas(r_id_nivel, r_nivel)}
+                    style={{ backgroundColor: `#${color}` }}
+                  >
+                    <div className="bg-zinc-900 rounded-2xl cursor-pointer">
+                      <a
+                        // target="blank"
+                        href={
+                          "http://localhost:3000/dashboard/Categorias/Acciones/" +
+                          id_categoria
+                        }
+                      >
+                        <div className="mx-auto">
+                          <div className="w-full p-4 text-center">
+                            <input
+                              className="w-full font-bold text-xl 	text-blue-gray-800 "
+                              style={{ backgroundColor: `#${color}` }}
+                              disabled
+                              value={nombre}
+                            />
+                            <img
+                              src={
+                                process.env.NEXT_PUBLIC_ACCESLINK + ruta_imagen
+                              }
+                              alt={descripcion}
+                              className="mt-3 h-52 w-auto mx-auto"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex justify-end items-center h-full">
+                          <Tooltip content="Editar">
+                            <IconButton
+                              color="gray"
+                              variant="gradient"
+                              onClick={() => AbrirEditorCategoria(id_categoria)}
+                            >
+                              <PencilIcon className="text-white h-8" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip content="Eliminar">
+                            <IconButton
+                              color="red"
+                              variant="gradient"
+                              className="ml-1"
+                              onClick={() => EliminarCategoria(id_categoria)}
+                            >
+                              <TrashIcon className="text-white h-8" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      </a>
                     </div>
                   </div>
-                </div>
+                </Tooltip>
               )
             )}
           </div>
