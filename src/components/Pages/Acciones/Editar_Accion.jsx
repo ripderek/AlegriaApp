@@ -118,7 +118,7 @@ export function Editar_Accion({
           withCredentials: false,
         }
       );
-      closeDialog();
+      closeDialog(true);
       setLoader(false);
     } catch (error) {
       alert("Error");
@@ -142,7 +142,7 @@ export function Editar_Accion({
       {load ? <Loader /> : ""}
       <Dialog_app
         open={openDialog}
-        close={closeDialog}
+        close={() => closeDialog(false)}
         title={`Editar Accion`}
         size="lg"
       >

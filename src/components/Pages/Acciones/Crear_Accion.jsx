@@ -88,7 +88,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
           withCredentials: false,
         }
       );
-      closeDialog();
+      closeDialog(true);
       setLoader(false);
     } catch (error) {
       console.log("Error");
@@ -114,7 +114,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
 
       <Dialog_app
         open={openDialog}
-        close={closeDialog}
+        close={() => closeDialog(false)}
         title="Crear Accion"
         size="lg"
       >

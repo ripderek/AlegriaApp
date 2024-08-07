@@ -18,7 +18,12 @@ import { format } from "date-fns";
 
 const TABLE_HEAD = ["Campo", "Valor", "Activar"];
 
-export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
+export function Buscar_Accion({
+  closeBuscador,
+  Titulo,
+  RealizarBusqueda,
+  ID_CAT,
+}) {
   // lista de las weas
   const [Filtros, setFiltros] = useState([
     {
@@ -28,6 +33,7 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
       Estado: false,
       Valor: "",
       Tipo: "Texto",
+      V_check: true,
     },
     {
       id: 1,
@@ -36,6 +42,7 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
       Estado: false,
       Valor: "",
       Tipo: "Texto",
+      V_check: true,
     },
     {
       //y-MM-dd
@@ -46,6 +53,7 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
       Fecha: new Date(),
       Valor: format(new Date(), "yyyy-MM-dd"),
       Tipo: "Fecha",
+      V_check: true,
     },
     {
       id: 3,
@@ -55,18 +63,20 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
       Fecha: new Date(),
       Valor: format(new Date(), "yyyy-MM-dd"),
       Tipo: "Fecha",
+      V_check: true,
     },
     {
       id: 4,
       PlaceHolder: "Activo",
       Clave: "Activo",
-      Estado: false,
-      Valor: false,
+      Estado: true,
+      Valor: true,
       Tipo: "Selector",
       Selector: {
         Habilitado: true,
         Deshabilitado: false,
       },
+      V_check: false,
     },
   ]);
   // Función para actualizar una propiedad de un objeto en Filtros por su índice
@@ -95,8 +105,12 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
     }, {});
 
     //console.log(datosExtraidos);
+    const datosConCategoria = {
+      ...datosExtraidos,
+      id_categoria: parseInt(ID_CAT),
+    };
     //retornar el JSON CON LOS FILTROS DE BUSQUEDA
-    RealizarBusqueda(datosExtraidos);
+    RealizarBusqueda(datosConCategoria);
   };
   return (
     <>
@@ -133,10 +147,11 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
                     Tipo,
                     Fecha,
                     PlaceHolder,
+                    V_check,
                   },
                   index
                 ) => (
-                  <tr key={name} className="even:bg-blue-gray-50/50">
+                  <tr key={id} className="even:bg-blue-gray-50/50">
                     <td className="p-4">
                       <Typography
                         variant="small"
@@ -189,16 +204,18 @@ export function Buscar_Accion({ closeBuscador, Titulo, RealizarBusqueda }) {
                       )}
                     </td>
                     <td className="p-4">
-                      <Checkbox
-                        checked={Estado}
-                        onChange={(event) =>
-                          actualizarEstado(
-                            index,
-                            event.target.checked,
-                            "Estado"
-                          )
-                        }
-                      />
+                      {V_check && (
+                        <Checkbox
+                          checked={Estado}
+                          onChange={(event) =>
+                            actualizarEstado(
+                              index,
+                              event.target.checked,
+                              "Estado"
+                            )
+                          }
+                        />
+                      )}
                     </td>
                   </tr>
                 )

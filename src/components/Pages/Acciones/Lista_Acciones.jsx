@@ -30,7 +30,7 @@ import {
   Buscar_Accion,
 } from "@/components/Pages/Acciones";
 import axios from "axios"; // para realizar las peticiones
-
+import { SimpleDialog } from "@/components/Elements";
 //import { colores_fondo } from "@/Data/colores_fondo";
 export function Lista_Acciones({ idCategoria }) {
   //Paginacion
@@ -182,14 +182,14 @@ export function Lista_Acciones({ idCategoria }) {
     SetEditar(true);
   };
   //funcion para eliminar la categoria
-  const EliminarAccion = async (id_accion_eliminar) => {
+  const EliminarAccion = async () => {
     // alert(id_accion_eliminar);
     setLoader(true);
     try {
       const result = await axios.delete(
         process.env.NEXT_PUBLIC_ACCESLINK +
           "acciones/eliminar/" +
-          id_accion_eliminar,
+          AccionEliminar,
 
         {
           headers: {
@@ -200,6 +200,12 @@ export function Lista_Acciones({ idCategoria }) {
       );
       setLoader(false);
       ObtenerAcciones(IdCategoria);
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "Se eliminó la acción",
+        Color: "green",
+      });
     } catch (error) {
       alert("Error");
       //colocar una alerta de error
@@ -207,6 +213,12 @@ export function Lista_Acciones({ idCategoria }) {
       //setMensajeError(error.response.data.error);
       //setError(true);
       console.log(error);
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "No se eliminó la acción",
+        Color: "red",
+      });
     }
   };
   /*
@@ -244,6 +256,12 @@ export function Lista_Acciones({ idCategoria }) {
       setAcciones(result.data);
       setLoader(false);
       //ObtenerCategorias();
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "Resultados de Busqueda",
+        Color: "blue",
+      });
     } catch (error) {
       alert("Error");
       //colocar una alerta de error
@@ -253,6 +271,21 @@ export function Lista_Acciones({ idCategoria }) {
       console.log(error);
     }
   };
+  //para abrir el dialog para confirmar si se elimina o nou
+  const [OpenDelete, SetOpenDelete] = useState(false);
+  //para manejar la confirmacion de si eliminar o no la categoria
+  const ConfirmarEliminacion = (indicador) => {
+    if (indicador) EliminarAccion();
+    SetOpenDelete(false);
+  };
+  //
+  const [AccionEliminar, SetAccionEliminar] = useState(0);
+  //para la notificacion
+  const [Notificacion, SetNoficacion] = useState({
+    Abrir: false,
+    Mensaje: "Hola Mundo",
+    Color: "red",
+  });
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -262,17 +295,57 @@ export function Lista_Acciones({ idCategoria }) {
       <Head>
         <title>Acciones</title>
       </Head>
+      <Notification
+        abrir={Notificacion.Abrir}
+        mensaje={Notificacion.Mensaje}
+        color={Notificacion.Color}
+        // SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+        cerrar={() => SetNoficacion({ ...Notificacion, Abrir: false })}
+      />
+      {/* Dialog para confirmar la eliminacion */}
+      {OpenDelete ? (
+        <SimpleDialog
+          title={"Eliminar"}
+          body={"¿Está seguro que desea eliminar la accion?"}
+          open={OpenDelete}
+          close={ConfirmarEliminacion}
+        />
+      ) : (
+        ""
+      )}
       {Crear && (
         <Crear_Accion
           openDialog={Crear}
-          closeDialog={() => (SetCrear(false), ObtenerAcciones(IdCategoria))}
+          closeDialog={(indicador) => (
+            SetCrear(false),
+            ObtenerAcciones(IdCategoria),
+            indicador
+              ? SetNoficacion({
+                  ...Notificacion,
+                  Abrir: true,
+                  Mensaje: "Se creó una acción",
+                  Color: "green",
+                })
+              : ""
+          )}
           categoria={IdCategoria}
         />
       )}
       {Editar && (
         <Editar_Accion
           openDialog={Editar}
-          closeDialog={() => (SetEditar(false), ObtenerAcciones(IdCategoria))}
+          closeDialog={(indicador) => (
+            SetEditar(false),
+            ObtenerAcciones(IdCategoria),
+            indicador
+              ? SetNoficacion({
+                  ...Notificacion,
+                  Abrir: true,
+                  Mensaje: "Se editó la acción",
+                  Color: "green",
+                })
+              : ""
+          )}
           IdAccionEditar={idAccionSeleccionada}
           IDCategoria={idCategoria}
         />
@@ -292,6 +365,7 @@ export function Lista_Acciones({ idCategoria }) {
           closeBuscador={() => setOpenBuscador(false)}
           Titulo={"Buscar Accion"}
           RealizarBusqueda={RealizarBusqueda}
+          ID_CAT={IdCategoria}
         />
       ) : (
         ""
@@ -513,7 +587,9 @@ export function Lista_Acciones({ idCategoria }) {
                             color="red"
                             variant="gradient"
                             className="ml-1"
-                            onClick={() => EliminarAccion(id_accion)}
+                            onClick={() => (
+                              SetAccionEliminar(id_accion), SetOpenDelete(true)
+                            )}
                           >
                             <TrashIcon className="text-white h-8" />
                           </IconButton>
