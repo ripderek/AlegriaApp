@@ -31,7 +31,7 @@ import {
   Buscar_Categoria,
 } from "@/components/Pages/Categorias";
 import axios from "axios"; // para realizar las peticiones
-
+import { SimpleDialog } from "@/components/Elements";
 //import { colores_fondo } from "@/Data/colores_fondo";
 export function Lista_Categorias() {
   //Paginacion
@@ -149,14 +149,14 @@ export function Lista_Categorias() {
     SetEditar(true);
   };
   //funcion para eliminar la categoria
-  const EliminarCategoria = async (idCategoriaELiminar) => {
+  const EliminarCategoria = async () => {
     //alert(idCategoriaELiminar);
     setLoader(true);
     try {
       const result = await axios.delete(
         process.env.NEXT_PUBLIC_ACCESLINK +
           "categorias/eliminar/" +
-          idCategoriaELiminar,
+          CategoriaEliminar,
 
         {
           headers: {
@@ -167,6 +167,12 @@ export function Lista_Categorias() {
       );
       setLoader(false);
       ObtenerCategorias();
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "Se eliminó la categoria",
+        Color: "green",
+      });
     } catch (error) {
       alert("Error");
       //colocar una alerta de error
@@ -174,6 +180,12 @@ export function Lista_Categorias() {
       //setMensajeError(error.response.data.error);
       //setError(true);
       console.log(error);
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "No se eliminó la categoria",
+        Color: "red",
+      });
     }
   };
   //para el buscador
@@ -201,6 +213,12 @@ export function Lista_Categorias() {
       /// console.log(result.data);
       setCategorias(result.data);
       setLoader(false);
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: "Resultados de Busqueda",
+        Color: "blue",
+      });
       //ObtenerCategorias();
     } catch (error) {
       alert("Error");
@@ -211,6 +229,21 @@ export function Lista_Categorias() {
       console.log(error);
     }
   };
+  //para abrir el dialog para confirmar si se elimina o nou
+  const [OpenDelete, SetOpenDelete] = useState(false);
+  //para manejar la confirmacion de si eliminar o no la categoria
+  const ConfirmarEliminacion = (indicador) => {
+    if (indicador) EliminarCategoria();
+    SetOpenDelete(false);
+  };
+  //estado que guarda la categoria seleccionada para eliminar
+  const [CategoriaEliminar, SetCategoriaEliminar] = useState(0);
+  //para la notificacion
+  const [Notificacion, SetNoficacion] = useState({
+    Abrir: false,
+    Mensaje: "Hola Mundo",
+    Color: "red",
+  });
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -220,16 +253,46 @@ export function Lista_Categorias() {
       <Head>
         <title>Categorias</title>
       </Head>
+      <Notification
+        abrir={Notificacion.Abrir}
+        mensaje={Notificacion.Mensaje}
+        color={Notificacion.Color}
+        // SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+        cerrar={() => SetNoficacion({ ...Notificacion, Abrir: false })}
+      />
+
       {Crear && (
         <Crear_Categoria
           openDialog={Crear}
-          closeDialog={() => (SetCrear(false), ObtenerCategorias())}
+          closeDialog={(indicador) => (
+            SetCrear(false),
+            ObtenerCategorias(),
+            indicador
+              ? SetNoficacion({
+                  ...Notificacion,
+                  Abrir: true,
+                  Mensaje: "Se creó una categoria",
+                  Color: "green",
+                })
+              : ""
+          )}
         />
       )}
       {Editar && (
         <Editar_Categoria
           openDialog={Editar}
-          closeDialog={() => (SetEditar(false), ObtenerCategorias())}
+          closeDialog={(indicador) => (
+            SetEditar(false),
+            ObtenerCategorias(),
+            indicador
+              ? SetNoficacion({
+                  ...Notificacion,
+                  Abrir: true,
+                  Mensaje: "Se editó una categoria",
+                  Color: "green",
+                })
+              : ""
+          )}
           IdCategoriaEditar={IdCategoriaSeleccionada}
         />
       )}
@@ -248,6 +311,17 @@ export function Lista_Categorias() {
           closeBuscador={() => setOpenBuscador(false)}
           Titulo={"Buscar Categoria"}
           RealizarBusqueda={RealizarBusqueda}
+        />
+      ) : (
+        ""
+      )}
+      {/* Dialog para confirmar la eliminacion */}
+      {OpenDelete ? (
+        <SimpleDialog
+          title={"Eliminar"}
+          body={"¿Está seguro que desea eliminar la categoria?"}
+          open={OpenDelete}
+          close={ConfirmarEliminacion}
         />
       ) : (
         ""
@@ -462,28 +536,32 @@ export function Lista_Categorias() {
                             />
                           </div>
                         </div>
-                        <div className="flex justify-end items-center h-full">
-                          <Tooltip content="Editar">
-                            <IconButton
-                              color="gray"
-                              variant="gradient"
-                              onClick={() => AbrirEditorCategoria(id_categoria)}
-                            >
-                              <PencilIcon className="text-white h-8" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip content="Eliminar">
-                            <IconButton
-                              color="red"
-                              variant="gradient"
-                              className="ml-1"
-                              onClick={() => EliminarCategoria(id_categoria)}
-                            >
-                              <TrashIcon className="text-white h-8" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
                       </a>
+                      <div className="flex justify-end items-center h-full">
+                        <Tooltip content="Editar">
+                          <IconButton
+                            color="gray"
+                            variant="gradient"
+                            onClick={() => AbrirEditorCategoria(id_categoria)}
+                          >
+                            <PencilIcon className="text-white h-8" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip content="Eliminar">
+                          <IconButton
+                            color="red"
+                            variant="gradient"
+                            className="ml-1"
+                            //onClick={() => EliminarCategoria(id_categoria)}
+                            onClick={() => (
+                              SetCategoriaEliminar(id_categoria),
+                              SetOpenDelete(true)
+                            )}
+                          >
+                            <TrashIcon className="text-white h-8" />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
                 </Tooltip>

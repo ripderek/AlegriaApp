@@ -113,7 +113,7 @@ export function Editar_Categoria({
           withCredentials: false,
         }
       );
-      closeDialog();
+      closeDialog(true);
       setLoader(false);
     } catch (error) {
       alert("Error");
@@ -137,7 +137,7 @@ export function Editar_Categoria({
       {load ? <Loader /> : ""}
       <Dialog_app
         open={openDialog}
-        close={closeDialog}
+        close={() => closeDialog(false)}
         title={`Editar Categoria`}
         size="lg"
       >

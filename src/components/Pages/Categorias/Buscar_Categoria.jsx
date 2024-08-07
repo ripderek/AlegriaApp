@@ -28,6 +28,8 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
       Estado: false,
       Valor: "",
       Tipo: "Texto",
+      //propiedad para saber si el check es visible o no
+      V_check: true,
     },
     {
       id: 1,
@@ -36,6 +38,7 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
       Estado: false,
       Valor: "",
       Tipo: "Texto",
+      V_check: true,
     },
     {
       //y-MM-dd
@@ -46,6 +49,7 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
       Fecha: new Date(),
       Valor: format(new Date(), "yyyy-MM-dd"),
       Tipo: "Fecha",
+      V_check: true,
     },
     {
       id: 3,
@@ -55,18 +59,20 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
       Fecha: new Date(),
       Valor: format(new Date(), "yyyy-MM-dd"),
       Tipo: "Fecha",
+      V_check: true,
     },
     {
       id: 4,
       PlaceHolder: "Activo",
       Clave: "Activo",
-      Estado: false,
-      Valor: false,
+      Estado: true,
+      Valor: true,
       Tipo: "Selector",
       Selector: {
         Habilitado: true,
         Deshabilitado: false,
       },
+      V_check: false,
     },
   ]);
   // Función para actualizar una propiedad de un objeto en Filtros por su índice
@@ -133,10 +139,11 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
                     Tipo,
                     Fecha,
                     PlaceHolder,
+                    V_check,
                   },
                   index
                 ) => (
-                  <tr key={name} className="even:bg-blue-gray-50/50">
+                  <tr key={id} className="even:bg-blue-gray-50/50">
                     <td className="p-4">
                       <Typography
                         variant="small"
@@ -189,16 +196,18 @@ export function Buscar_Categoria({ closeBuscador, Titulo, RealizarBusqueda }) {
                       )}
                     </td>
                     <td className="p-4">
-                      <Checkbox
-                        checked={Estado}
-                        onChange={(event) =>
-                          actualizarEstado(
-                            index,
-                            event.target.checked,
-                            "Estado"
-                          )
-                        }
-                      />
+                      {V_check && (
+                        <Checkbox
+                          checked={Estado}
+                          onChange={(event) =>
+                            actualizarEstado(
+                              index,
+                              event.target.checked,
+                              "Estado"
+                            )
+                          }
+                        />
+                      )}
                     </td>
                   </tr>
                 )

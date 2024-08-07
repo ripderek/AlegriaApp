@@ -79,7 +79,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
           withCredentials: false,
         }
       );
-      closeDialog();
+      closeDialog(true);
       setLoader(false);
     } catch (error) {
       alert("Error");
@@ -100,7 +100,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
       {load ? <Loader /> : ""}
       <Dialog_app
         open={openDialog}
-        close={closeDialog}
+        close={() => closeDialog(false)}
         title="Crear Categoria"
         size="lg"
       >
