@@ -59,13 +59,16 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
   const Crear_categoria = async (e) => {
     e.preventDefault();
 
-    console.log({
-      Accion: Categoria.Nombre,
-      Descripcion: Categoria.Descripcion,
-      Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
-      Imagen: base64Image,
-      id_categoria: parseInt(categoria),
-    });
+    //verifcar que los inputs tengan datos
+    if (Categoria.Nombre.trim() === "" || Categoria.Descripcion.trim() === "") {
+      setLoader(false);
+      alert(
+        "Llene los campos obligatorios como Nombre y descripcion por favor"
+      );
+
+      return false;
+    }
+
     //const byteFile = await getAsByteArray(file);
 
     //console.log(byteFile);
@@ -91,7 +94,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
       closeDialog(true);
       setLoader(false);
     } catch (error) {
-      console.log("Error");
+      //console.log("Error");
       console.log(error);
       alert("Error");
       //colocar una alerta de error
@@ -142,6 +145,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
                   onChange={HandleChange}
                   name="Nombre"
                   maxLength={30}
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -158,6 +162,7 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
                   onChange={HandleChange}
                   name="Descripcion"
                   maxLength={500}
+                  required
                 />
               </div>
 

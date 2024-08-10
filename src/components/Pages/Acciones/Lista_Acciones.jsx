@@ -32,6 +32,7 @@ import {
 import axios from "axios"; // para realizar las peticiones
 import { SimpleDialog } from "@/components/Elements";
 //import { colores_fondo } from "@/Data/colores_fondo";
+import { Crear_Categoria } from "@/components/Pages/Categorias";
 export function Lista_Acciones({ idCategoria }) {
   //Paginacion
   const [currentPage, setCurrentPage] = useState(1);
@@ -286,6 +287,8 @@ export function Lista_Acciones({ idCategoria }) {
     Mensaje: "Hola Mundo",
     Color: "red",
   });
+  //estado para crear Subcategoria
+  const [SubCategoria, SetCrearSubCategoria] = useState(false);
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -295,6 +298,24 @@ export function Lista_Acciones({ idCategoria }) {
       <Head>
         <title>Acciones</title>
       </Head>
+      {SubCategoria && (
+        <Crear_Categoria
+          openDialog={SubCategoria}
+          Id_Categoria={IdCategoria}
+          closeDialog={(indicador) => (
+            SetCrearSubCategoria(false),
+            ObtenerAcciones(IdCategoria),
+            indicador
+              ? SetNoficacion({
+                  ...Notificacion,
+                  Abrir: true,
+                  Mensaje: "Se creó una Subcategoria",
+                  Color: "green",
+                })
+              : ""
+          )}
+        />
+      )}
       <Notification
         abrir={Notificacion.Abrir}
         mensaje={Notificacion.Mensaje}
@@ -318,7 +339,7 @@ export function Lista_Acciones({ idCategoria }) {
           openDialog={Crear}
           closeDialog={(indicador) => (
             SetCrear(false),
-            ObtenerAcciones(IdCategoria),
+            ObtenerAcciones(idCategoria),
             indicador
               ? SetNoficacion({
                   ...Notificacion,
@@ -403,6 +424,17 @@ export function Lista_Acciones({ idCategoria }) {
               >
                 <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />
                 <span className="capitalize">Crear</span>
+              </Button>
+            </Tooltip>
+            <Tooltip content="Crear SubCategoria">
+              <Button
+                className="flex items-center gap-3"
+                size="sm"
+                color="blue"
+                onClick={() => SetCrearSubCategoria(true)}
+              >
+                <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />
+                <span className="capitalize">Crear SubCategoria</span>
               </Button>
             </Tooltip>
             <Tooltip content="Buscar Categoria">

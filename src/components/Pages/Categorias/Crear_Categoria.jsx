@@ -12,7 +12,7 @@ import anim from "../../../../public/anim/picture.json";
 import ColorPicker from "@rc-component/color-picker";
 import "@rc-component/color-picker/assets/index.css";
 
-export function Crear_Categoria({ openDialog, closeDialog }) {
+export function Crear_Categoria({ openDialog, closeDialog, Id_Categoria }) {
   const [load, setLoader] = useState(false);
   //color
   //aqui por ejemplo si se quiere editar se puede recibir el color actual
@@ -57,38 +57,76 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
   //enviar a la API a crear la categoria
   const Crear_categoria = async (e) => {
     e.preventDefault();
-
-    console.log(base64Image);
-    //const byteFile = await getAsByteArray(file);
-
-    //console.log(byteFile);
     setLoader(true);
-    try {
-      const result = await axios.post(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/insertar",
-        {
-          Nombre: Categoria.Nombre,
-          Descripcion: Categoria.Descripcion,
-          Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
-          Imagen: base64Image,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: false,
-        }
+    //preguntar primero si la wea va vacia skere
+    if (Categoria.Nombre.trim() === "" || Categoria.Descripcion.trim() === "") {
+      setLoader(false);
+      alert(
+        "Llene los campos obligatorios como Nombre y descripcion por favor"
       );
-      closeDialog(true);
-      setLoader(false);
-    } catch (error) {
-      alert("Error");
-      //colocar una alerta de error
-      setLoader(false);
-      //setMensajeError(error.response.data.error);
-      //setError(true);
-      console.log(error);
+
+      return false;
     }
+    //preguntar si se va a crear una subcategoria o categoria
+    if (Id_Categoria) {
+      //crear subcategoria
+      try {
+        const result = await axios.post(
+          process.env.NEXT_PUBLIC_ACCESLINK + "categorias/insertar",
+          {
+            ID_categoria_padre: parseInt(Id_Categoria),
+            Nombre: Categoria.Nombre,
+            Descripcion: Categoria.Descripcion,
+            Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+            Imagen: base64Image,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: false,
+          }
+        );
+        closeDialog(true);
+        setLoader(false);
+      } catch (error) {
+        alert("Error");
+        //colocar una alerta de error
+        setLoader(false);
+        //setMensajeError(error.response.data.error);
+        //setError(true);
+        console.log(error);
+      }
+    } else {
+      //crear categoria
+      try {
+        const result = await axios.post(
+          process.env.NEXT_PUBLIC_ACCESLINK + "categorias/insertar",
+          {
+            Nombre: Categoria.Nombre,
+            Descripcion: Categoria.Descripcion,
+            Color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+            Imagen: base64Image,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: false,
+          }
+        );
+        closeDialog(true);
+        setLoader(false);
+      } catch (error) {
+        alert("Error");
+        //colocar una alerta de error
+        setLoader(false);
+        //setMensajeError(error.response.data.error);
+        //setError(true);
+        console.log(error);
+      }
+    }
+    setLoader(false);
   };
   const handleColor = (value, type) => {
     //console.log(value.toHexString());
@@ -128,6 +166,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   onChange={HandleChange}
                   name="Nombre"
                   maxLength={30}
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -144,6 +183,7 @@ export function Crear_Categoria({ openDialog, closeDialog }) {
                   onChange={HandleChange}
                   name="Descripcion"
                   maxLength={500}
+                  required
                 />
               </div>
 

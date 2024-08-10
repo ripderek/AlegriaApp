@@ -91,14 +91,22 @@ export function Editar_Accion({
   //enviar a la API a crear la categoria
   const EditarCategoria = async (e) => {
     e.preventDefault();
+    //verifcar que los inputs tengan datos
+    if (Categoria.accion.trim() === "" || Categoria.Descripcion.trim() === "") {
+      setLoader(false);
+      alert(
+        "Llene los campos obligatorios como Nombre y descripcion por favor"
+      );
 
+      return false;
+    }
     setLoader(true);
     try {
       const result = await axios.put(
         process.env.NEXT_PUBLIC_ACCESLINK + "acciones/modificar",
         {
           accion: Categoria.accion,
-          descripcion: Categoria.descripcion,
+          descripcion: Categoria.Descripcion,
           color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
           imagen: base64Image,
           //imagen: "",
@@ -164,12 +172,13 @@ export function Editar_Accion({
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="categoria"
+                  id="accion"
                   type="text"
                   placeholder="Nombre de la accion"
                   onChange={HandleChange}
                   name="accion"
                   value={Categoria.accion}
+                  required
                 />
               </div>
               <div className="mb-4">
@@ -181,11 +190,12 @@ export function Editar_Accion({
                 </label>
                 <textarea
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="descripcion"
+                  id="Descripcion"
                   placeholder="Descripción de la categoría"
                   onChange={HandleChange}
-                  name="descripcion"
-                  value={Categoria.descripcion}
+                  name="Descripcion"
+                  value={Categoria.Descripcion}
+                  required
                 />
               </div>
 
