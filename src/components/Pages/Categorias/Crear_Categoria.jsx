@@ -67,6 +67,12 @@ export function Crear_Categoria({ openDialog, closeDialog, Id_Categoria }) {
 
       return false;
     }
+    //preguntar si la imagen ha sido subida de lo contrario no dejar crear
+    if (base64Image.trim() === "") {
+      setLoader(false);
+      alert("Debe subir una imagen por favor");
+      return false;
+    }
     //preguntar si se va a crear una subcategoria o categoria
     if (Id_Categoria) {
       //crear subcategoria

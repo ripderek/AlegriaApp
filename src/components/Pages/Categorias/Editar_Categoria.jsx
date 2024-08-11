@@ -100,6 +100,21 @@ export function Editar_Categoria({
 
     //console.log(byteFile);
     setLoader(true);
+    //enviar a actualizar sin la foto
+    console.log("Datos sin foto");
+    console.log({
+      nombre: Categoria.nombre,
+      descripcion: Categoria.descripcion,
+      color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
+      imagen: base64Image,
+      //imagen: "pinche Maholy",
+      id_categoria: IdCategoriaEditar,
+      id_categoria_padre: Categoria.id_categoria_padre,
+      nivel: Categoria.nivel,
+      activo: Estado,
+      acciones: Categoria.acciones,
+      subcategorias: Categoria.subcategorias,
+    });
     try {
       const result = await axios.put(
         process.env.NEXT_PUBLIC_ACCESLINK + "categorias/modificar",

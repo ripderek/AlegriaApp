@@ -70,7 +70,12 @@ export function Crear_Accion({ openDialog, closeDialog, categoria }) {
     }
 
     //const byteFile = await getAsByteArray(file);
-
+    //preguntar si la imagen ha sido subida de lo contrario no dejar crear
+    if (base64Image.trim() === "") {
+      setLoader(false);
+      alert("Debe subir una imagen por favor");
+      return false;
+    }
     //console.log(byteFile);
     //alert(categoria);
     setLoader(true);

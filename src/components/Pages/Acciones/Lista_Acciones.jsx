@@ -19,6 +19,11 @@ import {
   IconButton,
   Tooltip,
   Slider,
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
 } from "@material-tailwind/react";
 import { Dialog_Error, Loader, Notification } from "@/widgets"; //Importar el componente
 import { useEffect, useState } from "react";
@@ -32,7 +37,10 @@ import {
 import axios from "axios"; // para realizar las peticiones
 import { SimpleDialog } from "@/components/Elements";
 //import { colores_fondo } from "@/Data/colores_fondo";
-import { Crear_Categoria } from "@/components/Pages/Categorias";
+import {
+  Crear_Categoria,
+  Lista_Subcategorias,
+} from "@/components/Pages/Categorias";
 export function Lista_Acciones({ idCategoria }) {
   //Paginacion
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,6 +52,7 @@ export function Lista_Acciones({ idCategoria }) {
 
   /*LO QUE ESTOY USANDO NUEVO EN ESTE FORMULARIO */
   const [Acciones, setAcciones] = useState([]);
+  const [SubCategorias, SetSubCategorias] = useState([]);
   const [IdCategoria, SetIDCategoria] = useState(0);
   const [NombreCategoria, SetNombreCategoria] = useState("");
   useEffect(() => {
@@ -95,6 +104,7 @@ export function Lista_Acciones({ idCategoria }) {
       console.log("Lista Acciones por Categoria");
       console.log(data.acciones);
       setAcciones(data.acciones);
+      SetSubCategorias(data.subcategorias);
       SetNombreCategoria(data.nombre);
       //console.log(result.data);
       setLoader(false);
@@ -289,6 +299,9 @@ export function Lista_Acciones({ idCategoria }) {
   });
   //estado para crear Subcategoria
   const [SubCategoria, SetCrearSubCategoria] = useState(false);
+
+  //constante para probar las tabs para divir en 2 secciones esta interfaz skere
+
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -395,11 +408,13 @@ export function Lista_Acciones({ idCategoria }) {
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Lista de acciones
+              {NombreCategoria}
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Las siguientes acciones se encuentran disponibles en la categoria{" "}
+              Detalles de la categoria
+              {/* 
               <span className="font-semibold">{NombreCategoria}</span>
+              */}
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
@@ -505,46 +520,63 @@ export function Lista_Acciones({ idCategoria }) {
           */}
         </div>
       </CardHeader>
-      {Acciones && (
-        <CardBody className="px-0">
-          {Acciones === null ? (
-            <div className="mx-auto items-center text-center font-bold text-2xl">
-              No hay acciones
-            </div>
-          ) : (
-            ""
-          )}
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal leading-none opacity-70 ml-5"
-          >
-            Numero de acciones:
-            <span className="font-bold">{Acciones.length}</span>
-          </Typography>
-          <div className="flex flex-row ">
-            <div className="p-2 ml-4 gap-9 ">
-              <Tooltip content="Tabla">
-                <IconButton
-                  color="gray"
-                  variant="outlined"
-                  onClick={() => SetModoTarjeta(false)}
+      <Tabs value="html">
+        <TabsHeader>
+          <Tab key={"acciones"} value={"acciones"}>
+            {"Acciones"}
+          </Tab>
+          <Tab key={"subcategorias"} value={"subcategorias"}>
+            {"SubCategorias"}
+          </Tab>
+        </TabsHeader>
+        <TabsBody>
+          <TabPanel key={"acciones"} value={"acciones"}>
+            {Acciones ? (
+              <CardBody className="px-0">
+                {Acciones === null ? (
+                  <div className="mx-auto items-center text-center font-bold text-2xl">
+                    No hay acciones
+                  </div>
+                ) : (
+                  ""
+                )}
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70 ml-5"
                 >
-                  <ListBulletIcon className="text-black h-8" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip content="Tarjetas">
-                <IconButton
-                  color="gray"
-                  variant="outlined"
-                  className="ml-4"
-                  onClick={() => SetModoTarjeta(true)}
-                >
-                  <Squares2X2Icon className="text-black h-8" />
-                </IconButton>
-              </Tooltip>
-            </div>
-            {/*ModoTarjeta && (
+                  Numero de acciones:
+                  <span className="font-bold">{Acciones.length}</span>
+                </Typography>
+                <div className="flex flex-row ">
+                  <div className="p-2 ml-4 gap-9 ">
+                    <Tooltip content="Tabla">
+                      <IconButton
+                        color={!ModoTarjeta ? sidenavColor : "black"}
+                        variant="outlined"
+                        onClick={() => SetModoTarjeta(false)}
+                      >
+                        <ListBulletIcon
+                          className="h-8"
+                          color={!ModoTarjeta ? sidenavColor : "black"}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip content="Tarjetas">
+                      <IconButton
+                        color={ModoTarjeta ? sidenavColor : "black"}
+                        variant="outlined"
+                        className="ml-4"
+                        onClick={() => SetModoTarjeta(true)}
+                      >
+                        <Squares2X2Icon
+                          className="h-8"
+                          color={ModoTarjeta ? sidenavColor : "black"}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  {/*ModoTarjeta && (
       <div className="w-60 items-center mx-auto mt-2">
         Numero de tarjetas: {TamanoCards}
         <Slider
@@ -556,180 +588,193 @@ export function Lista_Acciones({ idCategoria }) {
         />
       </div>
     )*/}
-          </div>
-          {/* AQUI COLOCAR LA CONDICION PARA VERLO EN MODO TARJETA O MODO TABLA */}
-          {ModoTarjeta ? (
-            <div className={`grid gap-3 p-5 grid-cols-3`}>
-              {Acciones.map(
-                (
-                  {
-                    id_accion,
-                    id_categoria,
-                    accion,
-                    ruta_imagen,
-                    ruta_local,
-                    color,
-                    descripcion,
-                    activo,
-                    fecha_creacion,
-                    fecha_modificacion,
-                  },
-                  index
-                ) => (
-                  <div
-                    key={id_accion}
-                    className={`${
-                      borders ? "rounded-2xl" : "rounded-none"
-                    }  shadow-sm   hover:border-4 ${
-                      sidenavColors[sidenavColor]
-                    }  ${shadows[sidenavColor]}`}
-                    // onClick={() => AbrirPreguntas(r_id_nivel, r_nivel)}
-                    style={{ backgroundColor: `#${color}` }}
-                  >
-                    <div className="bg-zinc-900 rounded-2xl">
-                      <div className="mx-auto">
-                        <div className="w-full p-4 text-center">
-                          <input
-                            className="w-full font-bold text-xl 	text-blue-gray-800 "
-                            style={{ backgroundColor: `#${color}` }}
-                            disabled
-                            value={accion}
-                          />
-                          <img
-                            src={
-                              process.env.NEXT_PUBLIC_ACCESLINK + ruta_imagen
-                            }
-                            alt={descripcion}
-                            className="mt-3 h-52 w-auto mx-auto"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex justify-end items-center h-full">
-                        <Tooltip content="Editar">
-                          <IconButton
-                            color="gray"
-                            variant="gradient"
-                            onClick={() => AbrirEditorCategoria(id_accion)}
-                          >
-                            <PencilIcon className="text-white h-8" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip content="Eliminar">
-                          <IconButton
-                            color="red"
-                            variant="gradient"
-                            className="ml-1"
-                            onClick={() => (
-                              SetAccionEliminar(id_accion), SetOpenDelete(true)
-                            )}
-                          >
-                            <TrashIcon className="text-white h-8" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          ) : (
-            <Card
-              className={`h-full w-full  p-3 shadow-none ${
-                borders ? "rounded-2xl" : "rounded-none"
-              }`}
-            >
-              {/* MODO TABLA */}
-              <table
-                className={`w-full min-w-max table-auto text-left ${
-                  borders ? "rounded-2xl" : "rounded-none"
-                }`}
-              >
-                <thead>
-                  <tr>
-                    {TABLE_HEAD.map((head) => (
-                      <th
-                        key={head}
-                        className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-                      >
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          {head}
-                        </Typography>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Acciones.map(
-                    (
-                      {
-                        id_accion,
-                        id_categoria,
-                        accion,
-                        ruta_imagen,
-                        ruta_local,
-                        color,
-                        descripcion,
-                        activo,
-                        fecha_creacion,
-                        fecha_modificacion,
-                      },
-                      index
-                    ) => {
-                      const isLast = index === Acciones.length - 1;
-                      const classes = isLast
-                        ? "p-4"
-                        : "p-4 border-b border-blue-gray-50";
-
-                      return (
-                        <tr
+                </div>
+                {/* AQUI COLOCAR LA CONDICION PARA VERLO EN MODO TARJETA O MODO TABLA */}
+                {ModoTarjeta ? (
+                  <div className={`grid gap-3 p-5 grid-cols-2 md:grid-cols-3`}>
+                    {Acciones.map(
+                      (
+                        {
+                          id_accion,
+                          id_categoria,
+                          accion,
+                          ruta_imagen,
+                          ruta_local,
+                          color,
+                          descripcion,
+                          activo,
+                          fecha_creacion,
+                          fecha_modificacion,
+                        },
+                        index
+                      ) => (
+                        <div
                           key={id_accion}
-                          className={`even:bg-blue-gray-50/50 cursor-pointer ${"hover:bg-gray-400"}`}
+                          className={`${
+                            borders ? "rounded-2xl" : "rounded-none"
+                          }  shadow-sm   hover:border-4 ${
+                            sidenavColors[sidenavColor]
+                          }  ${shadows[sidenavColor]}`}
+                          // onClick={() => AbrirPreguntas(r_id_nivel, r_nivel)}
+                          style={{ backgroundColor: `#${color}` }}
                         >
-                          <td>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
+                          <div className="bg-zinc-900 rounded-2xl">
+                            <div className="mx-auto">
+                              <div className="w-full p-4 text-center">
+                                <input
+                                  className="w-full font-bold text-xl 	text-blue-gray-800 "
+                                  style={{ backgroundColor: `#${color}` }}
+                                  disabled
+                                  value={accion}
+                                />
+                                <img
+                                  src={
+                                    process.env.NEXT_PUBLIC_ACCESLINK +
+                                    ruta_imagen
+                                  }
+                                  alt={descripcion}
+                                  className="mt-3 h-52 w-auto mx-auto"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-center h-full">
+                              <Tooltip content="Editar">
+                                <IconButton
+                                  color="gray"
+                                  variant="gradient"
+                                  onClick={() =>
+                                    AbrirEditorCategoria(id_accion)
+                                  }
+                                >
+                                  <PencilIcon className="text-white h-8" />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip content="Eliminar">
+                                <IconButton
+                                  color="red"
+                                  variant="gradient"
+                                  className="ml-1"
+                                  onClick={() => (
+                                    SetAccionEliminar(id_accion),
+                                    SetOpenDelete(true)
+                                  )}
+                                >
+                                  <TrashIcon className="text-white h-8" />
+                                </IconButton>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <Card
+                    className={`h-full w-full  p-3 shadow-none ${
+                      borders ? "rounded-2xl" : "rounded-none"
+                    }`}
+                  >
+                    {/* MODO TABLA */}
+                    <table
+                      className={`w-full min-w-max table-auto text-left ${
+                        borders ? "rounded-2xl" : "rounded-none"
+                      }`}
+                    >
+                      <thead>
+                        <tr>
+                          {TABLE_HEAD.map((head) => (
+                            <th
+                              key={head}
+                              className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
                             >
-                              {accion}
-                            </Typography>
-                          </td>
-                          <td className={`${classes} `}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {descripcion}
-                            </Typography>
-                          </td>
-                          <td className={classes}>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {fecha_creacion}
-                            </Typography>
-                          </td>
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal leading-none opacity-70"
+                              >
+                                {head}
+                              </Typography>
+                            </th>
+                          ))}
                         </tr>
-                      );
-                    }
-                  )}
-                </tbody>
-              </table>
-            </Card>
-          )}
-        </CardBody>
-      )}
+                      </thead>
+                      <tbody>
+                        {Acciones.map(
+                          (
+                            {
+                              id_accion,
+                              id_categoria,
+                              accion,
+                              ruta_imagen,
+                              ruta_local,
+                              color,
+                              descripcion,
+                              activo,
+                              fecha_creacion,
+                              fecha_modificacion,
+                            },
+                            index
+                          ) => {
+                            const isLast = index === Acciones.length - 1;
+                            const classes = isLast
+                              ? "p-4"
+                              : "p-4 border-b border-blue-gray-50";
 
+                            return (
+                              <tr
+                                key={id_accion}
+                                className={`even:bg-blue-gray-50/50 cursor-pointer ${"hover:bg-gray-400"}`}
+                              >
+                                <td>
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {accion}
+                                  </Typography>
+                                </td>
+                                <td className={`${classes} `}>
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {descripcion}
+                                  </Typography>
+                                </td>
+                                <td className={classes}>
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="font-normal"
+                                  >
+                                    {fecha_creacion}
+                                  </Typography>
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
+                      </tbody>
+                    </table>
+                  </Card>
+                )}
+              </CardBody>
+            ) : (
+              "No hay acciones"
+            )}
+          </TabPanel>
+          <TabPanel key={"subcategorias"} value={"subcategorias"}>
+            <Lista_Subcategorias ListaSubCategorias={SubCategorias} />
+          </TabPanel>
+        </TabsBody>
+      </Tabs>
+
+      {/*   
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          {/*  Pagina {currentPage} de {totalPages}  */}
+       
         </Typography>
         <div className="flex gap-2">
           <Button
@@ -746,6 +791,7 @@ export function Lista_Acciones({ idCategoria }) {
           </Button>
         </div>
       </CardFooter>
+      */}
     </Card>
   );
 }

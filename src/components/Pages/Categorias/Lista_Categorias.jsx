@@ -448,21 +448,27 @@ export function Lista_Categorias() {
           <div className="p-2 ml-4 gap-9 ">
             <Tooltip content="Tabla">
               <IconButton
-                color="gray"
+                color={!ModoTarjeta ? sidenavColor : "black"}
                 variant="outlined"
                 onClick={() => SetModoTarjeta(false)}
               >
-                <ListBulletIcon className="text-black h-8" />
+                <ListBulletIcon
+                  className=" h-8"
+                  color={!ModoTarjeta ? sidenavColor : "black"}
+                />
               </IconButton>
             </Tooltip>
             <Tooltip content="Tarjetas">
               <IconButton
-                color="gray"
+                color={ModoTarjeta ? sidenavColor : "black"}
                 variant="outlined"
                 className="ml-4"
                 onClick={() => SetModoTarjeta(true)}
               >
-                <Squares2X2Icon className="text-black h-8" />
+                <Squares2X2Icon
+                  className="h-8"
+                  color={ModoTarjeta ? sidenavColor : "black"}
+                />
               </IconButton>
             </Tooltip>
           </div>
@@ -481,7 +487,7 @@ export function Lista_Categorias() {
         </div>
         {/* AQUI COLOCAR LA CONDICION PARA VERLO EN MODO TARJETA O MODO TABLA */}
         {ModoTarjeta ? (
-          <div className={`grid gap-3 p-5 grid-cols-3`}>
+          <div className={`grid gap-3 p-5 grid-cols-2 md:grid-cols-3`}>
             {Categorias.map(
               (
                 {
@@ -515,7 +521,8 @@ export function Lista_Categorias() {
                       <a
                         // target="blank"
                         href={
-                          "http://localhost:3000/dashboard/Categorias/Acciones/" +
+                          process.env.NEXT_PUBLIC_LINKAPP +
+                          "dashboard/Categorias/Acciones/" +
                           id_categoria
                         }
                       >
@@ -663,6 +670,7 @@ export function Lista_Categorias() {
           </Card>
         )}
       </CardBody>
+      {/* 
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
           Pagina {currentPage} de {totalPages}
@@ -676,6 +684,7 @@ export function Lista_Categorias() {
           </Button>
         </div>
       </CardFooter>
+      */}
     </Card>
   );
 }

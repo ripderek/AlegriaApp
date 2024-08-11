@@ -103,12 +103,12 @@ export function Buscar_Accion({
       }
       return acc;
     }, {});
-
-    //console.log(datosExtraidos);
     const datosConCategoria = {
       ...datosExtraidos,
       id_categoria: parseInt(ID_CAT),
     };
+    //console.log(datosConCategoria);
+    //alert("Ver Consola");
     //retornar el JSON CON LOS FILTROS DE BUSQUEDA
     RealizarBusqueda(datosConCategoria);
   };

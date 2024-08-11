@@ -85,12 +85,14 @@ export function BarraNavegacion({ routes, brandImg, brandName }) {
               >
                 Nombre App
               </Typography>
+              {/* 
               <Typography
                 color={sidenavType === "dark" ? "white" : "blue-gray"}
                 className="font-medium"
               >
                 Extintor Team
               </Typography>
+              */}
             </CardBody>
           )}
         </Card>
