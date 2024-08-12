@@ -227,7 +227,7 @@ export function Lista_Acciones({ idCategoria }) {
       SetNoficacion({
         ...Notificacion,
         Abrir: true,
-        Mensaje: "No se eliminó la acción",
+        Mensaje: error.response.data.error,
         Color: "red",
       });
     }
@@ -411,7 +411,7 @@ export function Lista_Acciones({ idCategoria }) {
               {NombreCategoria}
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Detalles de la categoria
+              Detalles de la categoría
               {/* 
               <span className="font-semibold">{NombreCategoria}</span>
               */}
@@ -449,7 +449,7 @@ export function Lista_Acciones({ idCategoria }) {
                 onClick={() => SetCrearSubCategoria(true)}
               >
                 <PlusCircleIcon strokeWidth={2} className="h-4 w-4" />
-                <span className="capitalize">Crear SubCategoria</span>
+                <span className="capitalize">Crear Sub-Categoría</span>
               </Button>
             </Tooltip>
             <Tooltip content="Buscar Categoria">
@@ -520,13 +520,13 @@ export function Lista_Acciones({ idCategoria }) {
           */}
         </div>
       </CardHeader>
-      <Tabs value="html">
+      <Tabs value="acciones">
         <TabsHeader>
           <Tab key={"acciones"} value={"acciones"}>
             {"Acciones"}
           </Tab>
           <Tab key={"subcategorias"} value={"subcategorias"}>
-            {"SubCategorias"}
+            {"Sub-Categorías"}
           </Tab>
         </TabsHeader>
         <TabsBody>
@@ -545,7 +545,7 @@ export function Lista_Acciones({ idCategoria }) {
                   color="blue-gray"
                   className="font-normal leading-none opacity-70 ml-5"
                 >
-                  Numero de acciones:
+                  Número de acciones:
                   <span className="font-bold">{Acciones.length}</span>
                 </Typography>
                 <div className="flex flex-row ">

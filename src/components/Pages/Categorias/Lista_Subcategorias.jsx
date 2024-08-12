@@ -175,7 +175,7 @@ export function Lista_Subcategorias({ ListaSubCategorias }) {
         <CardBody className="px-0">
           {ListaSubCategorias === null ? (
             <div className="mx-auto items-center text-center font-bold text-2xl">
-              No hay subcategorias
+              No hay sub-categorias
             </div>
           ) : (
             ""
@@ -186,7 +186,7 @@ export function Lista_Subcategorias({ ListaSubCategorias }) {
             color="blue-gray"
             className="font-normal leading-none opacity-70 ml-5"
           >
-            Numero de Subcategorias:
+            Número de sub-categorias:
             <span className="font-bold">{ListaSubCategorias.length}</span>
           </Typography>
           <div className="flex flex-row ">

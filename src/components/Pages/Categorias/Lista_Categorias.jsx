@@ -124,7 +124,7 @@ export function Lista_Categorias() {
   const [TamanoCards, SetTamanoCards] = useState(3);
   //para cambiar entre tablas o tarjetas
   const [ModoTarjeta, SetModoTarjeta] = useState(true);
-  const TABLE_HEAD = ["Nombre", "Descripcion", "Fecha de Creacion"];
+  const TABLE_HEAD = ["Nombre", "Descripción", "Fecha de Creación"];
   const colores_fondo = {
     dark: "bg-gray-900",
     //white: "bg-pink-100 shadow-sm",
@@ -174,7 +174,7 @@ export function Lista_Categorias() {
         Color: "green",
       });
     } catch (error) {
-      alert("Error");
+      //alert("Error");
       //colocar una alerta de error
       setLoader(false);
       //setMensajeError(error.response.data.error);
@@ -183,7 +183,7 @@ export function Lista_Categorias() {
       SetNoficacion({
         ...Notificacion,
         Abrir: true,
-        Mensaje: "No se eliminó la categoria",
+        Mensaje: error.response.data.error,
         Color: "red",
       });
     }
@@ -441,7 +441,7 @@ export function Lista_Categorias() {
           color="blue-gray"
           className="font-normal leading-none opacity-70 ml-5"
         >
-          Numero de categorias:
+          Número de categorias:
           <span className="font-bold">{Categorias.length}</span>
         </Typography>
         <div className="flex flex-row ">

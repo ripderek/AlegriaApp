@@ -24,7 +24,7 @@ export const routes = [
         path: "/Categorias",
         //element: <Home />,
       },
-
+      /*
       {
         //icon: <ChartBarSquareIcon {...icon} />,
         //Modificado para aceptar el clasname de donde se renderiza
@@ -33,7 +33,7 @@ export const routes = [
         path: "/Modelos",
         //element: <Home />,
       },
-      /*
+      
       {
         //icon: <ChartBarSquareIcon {...icon} />,
         //Modificado para aceptar el clasname de donde se renderiza

@@ -26,16 +26,23 @@ export default function Acciones() {
       */}
       <div className={`p-4  ${change_type_bar ? "xl:ml-32" : "xl:ml-56"}`}>
         <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} />
-        <Configurator />
-        <IconButton
-          size="lg"
-          className={`fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900 shadow-2xl`}
-          ripple={false}
-          onClick={() => setOpenConfigurator(dispatch, true)}
-          color={sidenavColor == "dark" ? "black" : sidenavColor}
-        >
-          <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
+        {process.env.NEXT_PUBLIC_DESARROLLO === "True" ? (
+          <>
+            <Configurator />
+
+            <IconButton
+              size="lg"
+              className={`fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900 shadow-2xl`}
+              ripple={false}
+              onClick={() => setOpenConfigurator(dispatch, true)}
+              color={sidenavColor == "dark" ? "black" : sidenavColor}
+            >
+              <Cog6ToothIcon className="h-5 w-5" />
+            </IconButton>
+          </>
+        ) : (
+          ""
+        )}
         <div className="mt-2">
           <Lista_Acciones />
         </div>

@@ -92,7 +92,7 @@ export function Editar_Categoria({
     if (Categoria.nombre.trim() === "" || Categoria.descripcion.trim() === "") {
       setLoader(false);
       alert(
-        "Llene los campos obligatorios como Nombre y descripcion por favor"
+        "Llene los campos obligatorios como nombre y descripción, por favor"
       );
 
       return false;
@@ -163,7 +163,7 @@ export function Editar_Categoria({
       <Dialog_app
         open={openDialog}
         close={() => closeDialog(false)}
-        title={`Editar Categoria`}
+        title={`Editar Categoría`}
         size="lg"
       >
         {/* Aquí va el cuerpo del diálogo */}
@@ -180,7 +180,7 @@ export function Editar_Categoria({
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="categoria"
                 >
-                  Categoria
+                  Categoría
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

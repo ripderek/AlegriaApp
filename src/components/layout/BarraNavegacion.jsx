@@ -83,7 +83,7 @@ export function BarraNavegacion({ routes, brandImg, brandName }) {
                 color={sidenavType === "dark" ? "white" : "blue-gray"}
                 className="mb-2"
               >
-                Nombre App
+                {process.env.NEXT_PUBLIC_NOMBREAPP}
               </Typography>
               {/* 
               <Typography
