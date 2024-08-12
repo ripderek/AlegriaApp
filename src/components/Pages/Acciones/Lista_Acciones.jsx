@@ -430,7 +430,7 @@ export function Lista_Acciones({ idCategoria }) {
               </Button>
             </Tooltip>
             */}
-            <Tooltip content="Crear Categoria">
+            <Tooltip content="Crear acción">
               <Button
                 className="flex items-center gap-3"
                 size="sm"

@@ -33,7 +33,8 @@ export default function Home() {
       <div className="p-4 xl:ml-56">
       */}
       <div className={`p-4  ${change_type_bar ? "xl:ml-32" : "xl:ml-56"}`}>
-        <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} />
+        {/*     <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} /> */}
+
         <Configurator />
         <IconButton
           size="lg"
@@ -44,7 +45,7 @@ export default function Home() {
         >
           <Cog6ToothIcon className="h-5 w-5" />
         </IconButton>
-        <div>Paguina de inicio</div>
+        <div></div>
       </div>
     </div>
   );

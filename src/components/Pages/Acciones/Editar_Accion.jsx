@@ -25,7 +25,7 @@ export function Editar_Accion({
   const [base64Image, setBase64Image] = useState("");
   const [color, setColor] = useState("#ffffff");
   //estado para almacenar lo del formulario
-  const [Categoria, SetCategoria] = useState({ accion: "", Descripcion: "" });
+  const [Categoria, SetCategoria] = useState({ accion: "", descripcion: "" });
   const [Estado, SetEstado] = useState(true);
   //hacer un useEffect para poder obtener los datos de la categoria a editar
   useEffect(() => {
@@ -92,7 +92,7 @@ export function Editar_Accion({
   const EditarCategoria = async (e) => {
     e.preventDefault();
     //verifcar que los inputs tengan datos
-    if (Categoria.accion.trim() === "" || Categoria.Descripcion.trim() === "") {
+    if (Categoria.accion.trim() === "" || Categoria.descripcion.trim() === "") {
       setLoader(false);
       alert(
         "Llene los campos obligatorios como Nombre y descripcion por favor"
@@ -106,7 +106,7 @@ export function Editar_Accion({
         process.env.NEXT_PUBLIC_ACCESLINK + "acciones/modificar",
         {
           accion: Categoria.accion,
-          descripcion: Categoria.Descripcion,
+          descripcion: Categoria.descripcion,
           color: color.substring(1), //aqui se elimina el # porque la api esta recibiendo el color sin ese simbolo
           imagen: base64Image,
           //imagen: "",
@@ -190,11 +190,11 @@ export function Editar_Accion({
                 </label>
                 <textarea
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="Descripcion"
+                  id="descripcion"
                   placeholder="Descripción de la categoría"
                   onChange={HandleChange}
-                  name="Descripcion"
-                  value={Categoria.Descripcion}
+                  name="descripcion"
+                  value={Categoria.descripcion}
                   required
                 />
               </div>
