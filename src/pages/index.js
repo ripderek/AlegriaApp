@@ -1,55 +1,124 @@
-import { IconButton } from "@material-tailwind/react";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import { Dialog_Error, Loader } from "@/widgets";
-import { BarraNavegacion, Navbar_app, Configurator } from "@/components/layout";
-//rutas que va a tener la barra lateral
-import routes from "@/routes";
+import { useEffect, useState } from "react";
 import {
-  useMaterialTailwindController,
-  setOpenConfigurator,
-  setSidenavColor,
-  setFixedNavbar,
-} from "@/context";
-import React from "react";
-//welcome.json
-//import Lottie from "lottie-react";
-//import anim from "../../../public/anim/welcome.json";
-//export function BarraNavegacion
-export default function Home() {
-  const [controller, dispatch] = useMaterialTailwindController();
-  const { sidenavType, sidenavColor, change_type_bar } = controller;
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Checkbox,
+  Button,
+} from "@material-tailwind/react";
+import axios from "axios"; // para realizar las peticiones
+import { Loader } from "@/widgets"; //Importar el componente
 
-  return (
-    <div className=" min-h-screen bg-blue-gray-50/50">
-      <BarraNavegacion
-        routes={routes}
-        brandImg={
-          sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
+export default function login() {
+  const [load, setLoader] = useState(false);
+
+  const [datasesion, SetDataSesion] = useState({
+    Nombre_usuario: "",
+    Contrasenia: "",
+  });
+  const HandleChange = (e) => {
+    SetDataSesion({ ...datasesion, [e.target.name]: e.target.value });
+    console.log(e.target.name, e.target.value);
+  };
+  //hacer la funcion para enviarlo los datos para el inicio de sesion
+  //enviar a la API a crear la categoria
+  const InicioSesion = async (e) => {
+    e.preventDefault();
+    setLoader(true);
+    console.log(datasesion);
+    //preguntar primero si la wea va vacia skere
+    if (
+      datasesion.Nombre_usuario.trim() === "" ||
+      datasesion.Contrasenia.trim() === ""
+    ) {
+      setLoader(false);
+      alert("Es obligatorio llenar los campos por favor");
+      return false;
+    }
+    try {
+      const result = await axios.post(
+        process.env.NEXT_PUBLIC_ACCESLINK + "login",
+        datasesion,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: false,
         }
-      />
-      {/* 
-      SI LA BARRA DE NAVEGACION ESTA COMPLETA 
-      <div className="p-4 xl:ml-80 ">
-      <div className="p-4 xl:ml-56">
-      */}
-      <div className={`p-4  ${change_type_bar ? "xl:ml-32" : "xl:ml-56"}`}>
-        {/*     <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} /> */}
-
-        <Configurator />
-        <IconButton
-          size="lg"
-          color="white"
-          className={`fixed bottom-8 right-8 z-40 rounded-full shadow-blue-gray-900 shadow-2xl border-x-4 border-y-4 border-purple-700`}
-          ripple={false}
-          onClick={() => setOpenConfigurator(dispatch, true)}
+      );
+      alert("No error");
+      console.log(result);
+      setLoader(false);
+    } catch (error) {
+      alert("Error");
+      //colocar una alerta de error
+      setLoader(false);
+      //setMensajeError(error.response.data.error);
+      //setError(true);
+      console.log(error);
+    }
+  };
+  return (
+    <Card className="w-96 mt-16 mx-auto">
+      {load ? <Loader /> : ""}
+      <CardHeader
+        variant="gradient"
+        color="transparent"
+        className="mb-4 grid h-18 place-items-center shadow-none  "
+      >
+        <Typography variant="h3" color=" black">
+          Inicio Sesión
+        </Typography>
+      </CardHeader>
+      <CardBody className="flex flex-col gap-4">
+        <form
+          className="flex flex-col gap-4"
+          //onSubmit={Crear_categoria}
+          id="formularioInicioSesion"
+          onSubmit={InicioSesion}
         >
-          <Cog6ToothIcon className="h-5 w-5" />
-        </IconButton>
-        <div></div>
-      </div>
-    </div>
+          <Input
+            label="Nombre de usuario"
+            size="lg"
+            name="Nombre_usuario"
+            onChange={HandleChange}
+          />
+          <Input
+            label="Contraseña"
+            size="lg"
+            name="Contrasenia"
+            onChange={HandleChange}
+          />
+        </form>
+      </CardBody>
+      <CardFooter className="pt-0">
+        <Button
+          variant="gradient"
+          fullWidth
+          type="submit"
+          form="formularioInicioSesion"
+          color="blue"
+        >
+          Continuar
+        </Button>
+        {/*
+        <Typography variant="small" className="mt-6 flex justify-center">
+          ¿No tienes una cuenta?
+          <Typography
+            as="a"
+            href="#signup"
+            variant="small"
+            color="blue-gray"
+            className="ml-1 font-bold"
+          >
+            crear cuenta
+          </Typography>
+        </Typography>
+ */}
+      </CardFooter>
+    </Card>
   );
 }
-Home.displayName = "/src/layout/dashboard.jsx";
-///src/layout/dashboard.jsx
-//export default Home;

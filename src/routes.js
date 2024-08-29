@@ -4,6 +4,7 @@ import {
   RectangleStackIcon,
   RectangleGroupIcon,
   CursorArrowRippleIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
 import { useMaterialTailwindController } from "@/context";
 
@@ -22,6 +23,14 @@ export const routes = [
         icon: (className) => <RectangleStackIcon className={className} />,
         name: "Categorias",
         path: "/Categorias",
+        //element: <Home />,
+      },
+      {
+        //icon: <ChartBarSquareIcon {...icon} />,
+        //Modificado para aceptar el clasname de donde se renderiza
+        icon: (className) => <UserIcon className={className} />,
+        name: "Usuarios",
+        path: "/Usuarios",
         //element: <Home />,
       },
       /*
