@@ -6,19 +6,14 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
-import Lottie from "lottie-react";
-import anim from "../../../../public/anim/picture.json";
-/* PARA EL SELECTOR DE COLORES */
-import ColorPicker from "@rc-component/color-picker";
-import "@rc-component/color-picker/assets/index.css";
 
 export function Crear_usuarios({ openDialog, closeDialog }) {
   const [load, setLoader] = useState(false);
   //estado para almacenar lo del formulario
   const [Categoria, SetCategoria] = useState({
-    Nombre_usuario: "",
-    Correo: "",
-    Contrasenia: "",
+    nombre_usuario: "",
+    correo: "",
+    contrasenia: "",
   });
   const HandleChange = (e) => {
     SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
@@ -30,9 +25,9 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
     setLoader(true);
     //preguntar primero si la wea va vacia skere
     if (
-      Categoria.Nombre_usuario.trim() === "" ||
-      Categoria.Contrasenia.trim() === "" ||
-      Categoria.Correo.trim() === ""
+      Categoria.nombre_usuario.trim() === "" ||
+      Categoria.contrasenia.trim() === "" ||
+      Categoria.correo.trim() === ""
     ) {
       setLoader(false);
       alert("Es obligatorio llenar los campos por favor");
@@ -93,7 +88,7 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
                   type="text"
                   placeholder="Nombre de usuario"
                   onChange={HandleChange}
-                  name="Nombre_usuario"
+                  name="nombre_usuario"
                   maxLength={200}
                   required
                 />
@@ -103,14 +98,14 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="categoria"
                 >
-                  Correo
+                  correo
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
-                  placeholder="Correo"
+                  placeholder="correo"
                   onChange={HandleChange}
-                  name="Correo"
+                  name="correo"
                   maxLength={200}
                   required
                 />
@@ -128,7 +123,7 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
                   type="text"
                   placeholder="Contraseña"
                   onChange={HandleChange}
-                  name="Contrasenia"
+                  name="contrasenia"
                   maxLength={200}
                   required
                 />

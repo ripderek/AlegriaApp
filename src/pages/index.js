@@ -10,14 +10,21 @@ import {
   Button,
 } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
-import { Loader } from "@/widgets"; //Importar el componente
+import { Loader, Notification } from "@/widgets"; //Importar el componente
+import Head from "next/head";
+import Cookies from "universal-cookie";
+import Router from "next/router";
 
 export default function login() {
   const [load, setLoader] = useState(false);
-
+  const [Notificacion, SetNoficacion] = useState({
+    Abrir: false,
+    Mensaje: "Hola Mundo",
+    Color: "red",
+  });
   const [datasesion, SetDataSesion] = useState({
-    Nombre_usuario: "",
-    Contrasenia: "",
+    nombre_usuario: "",
+    contrasenia: "",
   });
   const HandleChange = (e) => {
     SetDataSesion({ ...datasesion, [e.target.name]: e.target.value });
@@ -31,8 +38,8 @@ export default function login() {
     console.log(datasesion);
     //preguntar primero si la wea va vacia skere
     if (
-      datasesion.Nombre_usuario.trim() === "" ||
-      datasesion.Contrasenia.trim() === ""
+      datasesion.nombre_usuario.trim() === "" ||
+      datasesion.contrasenia.trim() === ""
     ) {
       setLoader(false);
       alert("Es obligatorio llenar los campos por favor");
@@ -49,21 +56,68 @@ export default function login() {
           withCredentials: false,
         }
       );
-      alert("No error");
       console.log(result);
       setLoader(false);
+      //crear un token enviarlo a las cookies y redireccionar a la paguina principal
+      GenerarJWT();
+      //redireccionar
+      const nuevaRuta = "/dashboard/Categorias"; //
+      Router.push(nuevaRuta);
     } catch (error) {
-      alert("Error");
+      //alert(error.response.data.error);
       //colocar una alerta de error
       setLoader(false);
       //setMensajeError(error.response.data.error);
       //setError(true);
+      // console.log(error);
+      SetNoficacion({
+        ...Notificacion,
+        Abrir: true,
+        Mensaje: error.response.data.error,
+        Color: "red",
+      });
+    }
+  };
+
+  const GenerarJWT = async () => {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: datasesion.nombre_usuario.trim(),
+          role: "Pruebita",
+        }),
+      });
+
+      const data = await response.json();
+      // console.log(data.token);
+      // guardar el token en las cookies
+      let token = data.token;
+      const cookies = new Cookies();
+      cookies.set("Token", token, { path: "/" }); //enviar cokiee y almacenarla
+    } catch (error) {
+      alert("Error");
+
       console.log(error);
     }
   };
+
   return (
     <Card className="w-96 mt-16 mx-auto">
+      <Head>
+        <title>Iniciar sesión</title>
+      </Head>
       {load ? <Loader /> : ""}
+      <Notification
+        abrir={Notificacion.Abrir}
+        mensaje={Notificacion.Mensaje}
+        color={Notificacion.Color}
+        // SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+        cerrar={() => SetNoficacion({ ...Notificacion, Abrir: false })}
+      />
       <CardHeader
         variant="gradient"
         color="transparent"
@@ -83,13 +137,13 @@ export default function login() {
           <Input
             label="Nombre de usuario"
             size="lg"
-            name="Nombre_usuario"
+            name="nombre_usuario"
             onChange={HandleChange}
           />
           <Input
             label="Contraseña"
             size="lg"
-            name="Contrasenia"
+            name="contrasenia"
             onChange={HandleChange}
           />
         </form>

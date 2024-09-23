@@ -81,6 +81,7 @@ export function Listar_Usuarios() {
   const EliminarUsuario = async () => {
     //alert(idCategoriaELiminar);
     setLoader(true);
+    //usuarios/eliminar/{id_usuario}
     try {
       const result = await axios.delete(
         process.env.NEXT_PUBLIC_ACCESLINK +
@@ -94,27 +95,16 @@ export function Listar_Usuarios() {
           withCredentials: false,
         }
       );
-      setLoader(false);
-      ObtenerUsuarios();
       SetNoficacion({
         ...Notificacion,
         Abrir: true,
         Mensaje: "Se eliminó el usuario",
         Color: "green",
       });
-    } catch (error) {
-      //alert("Error");
-      //colocar una alerta de error
       setLoader(false);
-      //setMensajeError(error.response.data.error);
-      //setError(true);
+      ObtenerUsuarios();
+    } catch (error) {
       console.log(error);
-      SetNoficacion({
-        ...Notificacion,
-        Abrir: true,
-        Mensaje: error.response.data.error,
-        Color: "red",
-      });
     }
   };
   //para el buscador
@@ -173,6 +163,14 @@ export function Listar_Usuarios() {
     Mensaje: "Hola Mundo",
     Color: "red",
   });
+  /* para la modificacion de un usuario*/
+  const [OpenEditUser, setOpenEditUser] = useState(false);
+  const [IdUserEdit, setIdUserEdit] = useState(0);
+  const HandleEditUser = (id) => {
+    setIdUserEdit(id);
+    setOpenEditUser(true);
+  };
+
   return (
     <Card
       className={`h-full w-full rounded-none ${
@@ -189,7 +187,14 @@ export function Listar_Usuarios() {
         // SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
         cerrar={() => SetNoficacion({ ...Notificacion, Abrir: false })}
       />
-
+      {/* EDITAR USUARIO */}
+      {OpenEditUser && (
+        <Editar_usuarios
+          closeDialog={() => setOpenEditUser(false)}
+          openDialog={OpenEditUser}
+          idUserEdit={IdUserEdit}
+        />
+      )}
       {Crear && (
         <Crear_usuarios
           openDialog={Crear}
@@ -396,7 +401,7 @@ export function Listar_Usuarios() {
                               className="flex items-center gap-3"
                               size="sm"
                               color="yellow"
-                              //   onClick={() => SetCrear(true)}
+                              onClick={() => HandleEditUser(id_usuario)}
                             >
                               <PencilSquareIcon
                                 strokeWidth={2}

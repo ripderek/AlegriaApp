@@ -50,9 +50,10 @@ export function Lista_Categorias() {
   //funcion para cargar los niveles que tiene una seccion
   const ObtenerCategorias = async () => {
     setLoader(true);
+
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/listar",
+        "https://aplicaciones.uteq.edu.ec:9022/categorias/listar",
         {
           method: "GET",
           //headers: { "Content-Type": "application/json" },
@@ -60,11 +61,13 @@ export function Lista_Categorias() {
         }
       );
       const data = await response.json();
+
       console.log(data);
       setCategorias(data);
       //console.log(result.data);
       setLoader(false);
     } catch (error) {
+      //alert("Error");
       setLoader(false);
       //colocar una alerta de error cuando no se pueda inciar sesion
       setError(true);
