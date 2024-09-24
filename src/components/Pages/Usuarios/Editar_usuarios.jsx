@@ -1,22 +1,48 @@
 // Crear_Usuario_Funcion.js
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Dialog_app } from "@/components/Elements";
 import { AiOutlineUpload } from "react-icons/ai";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
+import { Select, Option } from "@material-tailwind/react";
 
 export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
+  //hacer un useefect que cargue los datos del usuario
+  const [Usuarios, setUsuarios] = useState([]);
+  useEffect(() => {
+    ObtenerUsuarios();
+  }, []);
+  const ObtenerUsuarios = async () => {
+    setLoader(true);
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_ACCESLINK + "usuarios/" + idUserEdit,
+        {
+          method: "GET",
+          //headers: { "Content-Type": "application/json" },
+          //credentials: "include",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      setUsuarios(data);
+
+      //console.log(result.data);
+      setLoader(false);
+    } catch (error) {
+      setLoader(false);
+      //colocar una alerta de error cuando no se pueda inciar sesion
+      setError(true);
+      //setMensajeError(error.response.data.error);
+      console.log(error);
+    }
+  };
   const [load, setLoader] = useState(false);
-  //estado para almacenar lo del formulario
-  const [Categoria, SetCategoria] = useState({
-    nombre_usuario: "",
-    correo: "",
-    contrasenia: "",
-  });
+
   const HandleChange = (e) => {
-    SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
+    setUsuarios({ ...Usuarios, [e.target.name]: e.target.value });
   };
 
   //enviar a la API a crear la categoria
@@ -35,19 +61,18 @@ export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
     setLoader(true);
     //preguntar primero si la wea va vacia skere
     if (
-      Categoria.nombre_usuario.trim() === "" ||
-      Categoria.contrasenia.trim() === "" ||
-      Categoria.correo.trim() === ""
+      Usuarios.nombre_usuario.trim() === "" ||
+      Usuarios.contrasenia.trim() === "" ||
+      Usuarios.correo.trim() === ""
     ) {
       setLoader(false);
       alert("Es obligatorio llenar los campos por favor");
       return false;
     }
-    console.log(Categoria);
     try {
-      const result = await axios.post(
-        process.env.NEXT_PUBLIC_ACCESLINK + "usuarios/insertar",
-        Categoria,
+      const result = await axios.put(
+        process.env.NEXT_PUBLIC_ACCESLINK + "usuarios/modificar",
+        Usuarios,
         {
           headers: {
             "Content-Type": "application/json",
@@ -79,7 +104,6 @@ export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
       >
         {/* Aquí va el cuerpo del diálogo */}
         {/* Crear un contenedor con dos div en forma de columas */}
-        {"ID uuario: " + idUserEdit}
         <div>
           <div>
             <form
@@ -102,6 +126,7 @@ export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
                   name="nombre_usuario"
                   maxLength={200}
                   required
+                  value={Usuarios.nombre_usuario}
                 />
               </div>
               <div className="mb-4">
@@ -119,6 +144,7 @@ export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
                   name="correo"
                   maxLength={200}
                   required
+                  value={Usuarios.correo}
                 />
               </div>
               <div className="mb-4">
@@ -137,7 +163,27 @@ export function Editar_usuarios({ openDialog, closeDialog, idUserEdit }) {
                   name="contrasenia"
                   maxLength={200}
                   required
+                  value={Usuarios.contrasenia}
                 />
+              </div>
+              <div className="w-72">
+                <Select
+                  label="Seleccionar tipo usuario"
+                  value={Usuarios.rol}
+                  onChange={(val) => setUsuarios({ ...Usuarios, rol: val })}
+                  //onChange={(val) => alert(val)}
+                >
+                  <Option //onClick={() => ({ ...Categoria, rol: "ADM" })}
+                    value="ADM"
+                  >
+                    Admin
+                  </Option>
+                  <Option //onClick={() => ({ ...Categoria, rol: "   " })}
+                    value="   "
+                  >
+                    Usuario Normal
+                  </Option>
+                </Select>
               </div>
             </form>
           </div>

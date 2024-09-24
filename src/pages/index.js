@@ -14,8 +14,11 @@ import { Loader, Notification } from "@/widgets"; //Importar el componente
 import Head from "next/head";
 import Cookies from "universal-cookie";
 import Router from "next/router";
+import { useMaterialTailwindController, setTypeUser } from "@/context";
 
-export default function login() {
+export default function Login() {
+  const [controller, dispatch] = useMaterialTailwindController();
+
   const [load, setLoader] = useState(false);
   const [Notificacion, SetNoficacion] = useState({
     Abrir: false,
@@ -56,10 +59,14 @@ export default function login() {
           withCredentials: false,
         }
       );
-      console.log(result);
+      console.log(result.data);
       setLoader(false);
       //crear un token enviarlo a las cookies y redireccionar a la paguina principal
       GenerarJWT();
+      //obtener los datos del usuario que incio sesion
+      let rolUser = result.data.rol;
+      //colocar en el contexto si es admin o no el usuario
+      setTypeUser(dispatch, rolUser === "ADM" ? true : false);
       //redireccionar
       const nuevaRuta = "/dashboard/Categorias"; //
       Router.push(nuevaRuta);
@@ -144,6 +151,7 @@ export default function login() {
             label="Contraseña"
             size="lg"
             name="contrasenia"
+            type="password"
             onChange={HandleChange}
           />
         </form>

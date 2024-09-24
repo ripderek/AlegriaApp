@@ -68,6 +68,10 @@ export function reducer(state, action) {
     case "CHANGE_COLOR_SOMBRA": {
       return { ...state, color_sombras: action.value };
     }
+    //para cambiar si el usuario que tiene iniciado sesion es admin o no
+    case "CHANGE_TYPE_USER": {
+      return { ...state, IsAdmin: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -94,6 +98,7 @@ export function MaterialTailwindControllerProvider({ children }) {
     tamano_border: "border-2",
     tamano_sombras: "shadow-xl",
     color_sombras: "shadow-blue-gray-900",
+    IsAdmin: false,
   };
 
   const [controller, dispatch] = React.useReducer(reducer, initialState);
@@ -172,3 +177,6 @@ export const setTamanoSombra = (dispatch, value) =>
 //CHANGE_COLOR_SOMBRA
 export const setTColorsombra = (dispatch, value) =>
   dispatch({ type: "CHANGE_COLOR_SOMBRA", value });
+//CHANGE_TYPE_USER
+export const setTypeUser = (dispatch, value) =>
+  dispatch({ type: "CHANGE_TYPE_USER", value });

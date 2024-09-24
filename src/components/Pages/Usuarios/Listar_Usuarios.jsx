@@ -190,7 +190,7 @@ export function Listar_Usuarios() {
       {/* EDITAR USUARIO */}
       {OpenEditUser && (
         <Editar_usuarios
-          closeDialog={() => setOpenEditUser(false)}
+          closeDialog={() => (setOpenEditUser(false), ObtenerUsuarios())}
           openDialog={OpenEditUser}
           idUserEdit={IdUserEdit}
         />

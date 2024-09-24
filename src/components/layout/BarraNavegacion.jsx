@@ -24,6 +24,9 @@ import Lottie from "lottie-react";
 import anim from "../../../public/anim/icon_app.json";
 //importar el archivo Js con los colores
 import { colores_fondo } from "../../Data/colores_fondo";
+import { routes_admin } from "@/Routes/routes-admin";
+import { routes_user } from "@/Routes/routes-user";
+
 export function BarraNavegacion({ routes, brandImg, brandName }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const {
@@ -39,6 +42,7 @@ export function BarraNavegacion({ routes, brandImg, brandName }) {
     tamano_border,
     tamano_sombras,
     color_sombras,
+    IsAdmin,
   } = controller;
   // Define la lógica para determinar si un enlace está activo
   const router = useRouter();
@@ -128,45 +132,86 @@ export function BarraNavegacion({ routes, brandImg, brandName }) {
         </IconButton>
       </div>
       <div>
-        {routes.map(({ layout, title, pages }, key) => (
-          <ul key={key} className=" flex flex-col gap-1">
-            {pages.map(({ icon, name, path }) => (
-              <li key={name}>
-                <Link href={`/${layout}${path}`} passHref>
-                  <Tooltip content={`${!change_type_bar ? "Ir" : name}`}>
-                    <Button
-                      as="a"
-                      variant={
-                        isActive(`/${layout}${path}`) ? "gradient" : "text"
-                      }
-                      color={
-                        isActive(`/${layout}${path}`)
-                          ? sidenavColor
-                          : sidenavType === "dark"
-                          ? "white"
-                          : "black"
-                      }
-                      className={`flex items-center capitalize ${
-                        change_type_bar ? "mx-auto h-15" : "gap-6 px-4 h-9"
-                      }`}
-                      fullWidth
-                    >
-                      {icon(!change_type_bar ? "h-5" : "h-6 w-10")}
-                      {!change_type_bar && (
-                        <Typography
-                          color="inherit"
-                          className="font-medium capitalize "
+        {/* SI ES ADMIN RECORRER LAS RUTAS DEL ADMIN SI NO RECORRER LAS RUTAS DE USUARIO */}
+        {IsAdmin
+          ? routes_admin.map(({ layout, title, pages }, key) => (
+              <ul key={key} className=" flex flex-col gap-1">
+                {pages.map(({ icon, name, path }) => (
+                  <li key={name}>
+                    <Link href={`/${layout}${path}`} passHref>
+                      <Tooltip content={`${!change_type_bar ? "Ir" : name}`}>
+                        <Button
+                          as="a"
+                          variant={
+                            isActive(`/${layout}${path}`) ? "gradient" : "text"
+                          }
+                          color={
+                            isActive(`/${layout}${path}`)
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "black"
+                          }
+                          className={`flex items-center capitalize ${
+                            change_type_bar ? "mx-auto h-15" : "gap-6 px-4 h-9"
+                          }`}
+                          fullWidth
                         >
-                          {name}
-                        </Typography>
-                      )}
-                    </Button>
-                  </Tooltip>
-                </Link>
-              </li>
+                          {icon(!change_type_bar ? "h-5" : "h-6 w-10")}
+                          {!change_type_bar && (
+                            <Typography
+                              color="inherit"
+                              className="font-medium capitalize "
+                            >
+                              {name}
+                            </Typography>
+                          )}
+                        </Button>
+                      </Tooltip>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ))
+          : routes_user.map(({ layout, title, pages }, key) => (
+              <ul key={key} className=" flex flex-col gap-1">
+                {pages.map(({ icon, name, path }) => (
+                  <li key={name}>
+                    <Link href={`/${layout}${path}`} passHref>
+                      <Tooltip content={`${!change_type_bar ? "Ir" : name}`}>
+                        <Button
+                          as="a"
+                          variant={
+                            isActive(`/${layout}${path}`) ? "gradient" : "text"
+                          }
+                          color={
+                            isActive(`/${layout}${path}`)
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "black"
+                          }
+                          className={`flex items-center capitalize ${
+                            change_type_bar ? "mx-auto h-15" : "gap-6 px-4 h-9"
+                          }`}
+                          fullWidth
+                        >
+                          {icon(!change_type_bar ? "h-5" : "h-6 w-10")}
+                          {!change_type_bar && (
+                            <Typography
+                              color="inherit"
+                              className="font-medium capitalize "
+                            >
+                              {name}
+                            </Typography>
+                          )}
+                        </Button>
+                      </Tooltip>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             ))}
-          </ul>
-        ))}
       </div>
     </aside>
   );

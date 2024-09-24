@@ -6,6 +6,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { Button } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
+import { Select, Option } from "@material-tailwind/react";
 
 export function Crear_usuarios({ openDialog, closeDialog }) {
   const [load, setLoader] = useState(false);
@@ -14,6 +15,7 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
     nombre_usuario: "",
     correo: "",
     contrasenia: "",
+    rol: "",
   });
   const HandleChange = (e) => {
     SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
@@ -127,6 +129,25 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
                   maxLength={200}
                   required
                 />
+              </div>
+              <div className="w-72">
+                <Select
+                  label="Seleccionar tipo usuario"
+                  //value={value}
+                  onChange={(val) => SetCategoria({ ...Categoria, rol: val })}
+                  //onChange={(val) => alert(val)}
+                >
+                  <Option //onClick={() => ({ ...Categoria, rol: "ADM" })}
+                    value="ADM"
+                  >
+                    Admin
+                  </Option>
+                  <Option //onClick={() => ({ ...Categoria, rol: "   " })}
+                    value="   "
+                  >
+                    Usuario Normal
+                  </Option>
+                </Select>
               </div>
             </form>
           </div>
