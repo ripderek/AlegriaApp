@@ -53,7 +53,7 @@ export function Lista_Categorias() {
 
     try {
       const response = await fetch(
-        "https://aplicaciones.uteq.edu.ec:9022/categorias/listar",
+        process.env.NEXT_PUBLIC_ACCESLINK + "categorias/listar",
         {
           method: "GET",
           //headers: { "Content-Type": "application/json" },

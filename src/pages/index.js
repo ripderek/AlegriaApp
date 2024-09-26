@@ -60,9 +60,9 @@ export default function Login() {
         }
       );
       console.log(result.data);
-      setLoader(false);
+      //
       //crear un token enviarlo a las cookies y redireccionar a la paguina principal
-      GenerarJWT();
+      await GenerarJWT();
       //obtener los datos del usuario que incio sesion
       let rolUser = result.data.rol;
       //colocar en el contexto si es admin o no el usuario
@@ -70,7 +70,9 @@ export default function Login() {
       //redireccionar
       const nuevaRuta = "/dashboard/Categorias"; //
       Router.push(nuevaRuta);
+      //setLoader(false);
     } catch (error) {
+      alert("Error");
       //alert(error.response.data.error);
       //colocar una alerta de error
       setLoader(false);
@@ -98,7 +100,6 @@ export default function Login() {
           role: "Pruebita",
         }),
       });
-
       const data = await response.json();
       // console.log(data.token);
       // guardar el token en las cookies
@@ -107,7 +108,7 @@ export default function Login() {
       cookies.set("Token", token, { path: "/" }); //enviar cokiee y almacenarla
     } catch (error) {
       alert("Error");
-
+      setLoader(false);
       console.log(error);
     }
   };
