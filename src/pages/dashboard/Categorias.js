@@ -25,7 +25,7 @@ export default function Categorias() {
       <div className="p-4 xl:ml-56">
       */}
       <div className={`p-4  ${change_type_bar ? "xl:ml-32" : "xl:ml-56"}`}>
-        {/*  <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} /> */}
+        <Navbar_app user_name={"Nombre User"} titulo={"Inicio"} />
 
         {process.env.NEXT_PUBLIC_DESARROLLO === "True" ? (
           <>

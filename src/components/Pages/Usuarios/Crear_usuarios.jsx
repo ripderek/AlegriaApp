@@ -3,12 +3,14 @@ import { useState, useRef } from "react";
 import { Dialog_app } from "@/components/Elements";
 import { AiOutlineUpload } from "react-icons/ai";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { Button } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader } from "@/widgets"; //Importar el componente
-import { Select, Option } from "@material-tailwind/react";
+import { Select, Option, IconButton, Button } from "@material-tailwind/react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 export function Crear_usuarios({ openDialog, closeDialog }) {
+  const [VerContra, setVerContra] = useState(false);
+
   const [load, setLoader] = useState(false);
   //estado para almacenar lo del formulario
   const [Categoria, SetCategoria] = useState({
@@ -119,16 +121,36 @@ export function Crear_usuarios({ openDialog, closeDialog }) {
                 >
                   Contraseña
                 </label>
-
-                <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  placeholder="Contraseña"
-                  onChange={HandleChange}
-                  name="contrasenia"
-                  maxLength={200}
-                  required
-                />
+                <div className="flex">
+                  <input
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    //type="text"
+                    placeholder="Contraseña"
+                    onChange={HandleChange}
+                    name="contrasenia"
+                    maxLength={200}
+                    required
+                    type={VerContra ? "text" : "password"}
+                    //type="password"
+                  />
+                  <IconButton
+                    variant="text"
+                    color="blue-gray"
+                    onClick={() => setVerContra(!VerContra)}
+                  >
+                    {VerContra ? (
+                      <EyeSlashIcon
+                        strokeWidth={3}
+                        className="h-8 w-8 text-blue-gray-500"
+                      />
+                    ) : (
+                      <EyeIcon
+                        strokeWidth={3}
+                        className="h-8 w-8 text-blue-gray-500"
+                      />
+                    )}
+                  </IconButton>
+                </div>
               </div>
               <div className="w-72">
                 <Select

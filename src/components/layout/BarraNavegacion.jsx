@@ -26,8 +26,11 @@ import anim from "../../../public/anim/icon_app.json";
 import { colores_fondo } from "../../Data/colores_fondo";
 import { routes_admin } from "@/Routes/routes-admin";
 import { routes_user } from "@/Routes/routes-user";
+import Cookies from "universal-cookie";
 
 export function BarraNavegacion({ routes, brandImg, brandName }) {
+  const cookies = new Cookies();
+
   const [controller, dispatch] = useMaterialTailwindController();
   const {
     sidenavColor,
@@ -133,7 +136,7 @@ export function BarraNavegacion({ routes, brandImg, brandName }) {
       </div>
       <div>
         {/* SI ES ADMIN RECORRER LAS RUTAS DEL ADMIN SI NO RECORRER LAS RUTAS DE USUARIO */}
-        {IsAdmin
+        {cookies.get("Type") == "ADM"
           ? routes_admin.map(({ layout, title, pages }, key) => (
               <ul key={key} className=" flex flex-col gap-1">
                 {pages.map(({ icon, name, path }) => (

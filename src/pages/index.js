@@ -6,8 +6,8 @@ import {
   CardFooter,
   Typography,
   Input,
-  Checkbox,
   Button,
+  IconButton,
 } from "@material-tailwind/react";
 import axios from "axios"; // para realizar las peticiones
 import { Loader, Notification } from "@/widgets"; //Importar el componente
@@ -15,10 +15,11 @@ import Head from "next/head";
 import Cookies from "universal-cookie";
 import Router from "next/router";
 import { useMaterialTailwindController, setTypeUser } from "@/context";
-
+import Image from "next/image";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 export default function Login() {
   const [controller, dispatch] = useMaterialTailwindController();
-
+  const [VerContra, setVerContra] = useState(false);
   const [load, setLoader] = useState(false);
   const [Notificacion, SetNoficacion] = useState({
     Abrir: false,
@@ -35,6 +36,7 @@ export default function Login() {
   };
   //hacer la funcion para enviarlo los datos para el inicio de sesion
   //enviar a la API a crear la categoria
+  const cookies = new Cookies();
   const InicioSesion = async (e) => {
     e.preventDefault();
     setLoader(true);
@@ -60,19 +62,23 @@ export default function Login() {
         }
       );
       console.log(result.data);
-      //
+      //setLoader(false);
       //crear un token enviarlo a las cookies y redireccionar a la paguina principal
       await GenerarJWT();
       //obtener los datos del usuario que incio sesion
       let rolUser = result.data.rol;
+
       //colocar en el contexto si es admin o no el usuario
       setTypeUser(dispatch, rolUser === "ADM" ? true : false);
       //redireccionar
       const nuevaRuta = "/dashboard/Categorias"; //
+      cookies.set("Nombres", result.data.nombre_usuario); //enviar cokiee y almacenarla
+      cookies.set("Type", rolUser); //enviar cokiee y almacenarla
+
       Router.push(nuevaRuta);
-      //setLoader(false);
+
+      //nombre_usuario
     } catch (error) {
-      alert("Error");
       //alert(error.response.data.error);
       //colocar una alerta de error
       setLoader(false);
@@ -104,7 +110,7 @@ export default function Login() {
       // console.log(data.token);
       // guardar el token en las cookies
       let token = data.token;
-      const cookies = new Cookies();
+
       cookies.set("Token", token, { path: "/" }); //enviar cokiee y almacenarla
     } catch (error) {
       alert("Error");
@@ -114,7 +120,7 @@ export default function Login() {
   };
 
   return (
-    <Card className="w-96 mt-16 mx-auto">
+    <div className="w-full">
       <Head>
         <title>Iniciar sesión</title>
       </Head>
@@ -126,62 +132,116 @@ export default function Login() {
         // SetCategoria({ ...Categoria, [e.target.name]: e.target.value });
         cerrar={() => SetNoficacion({ ...Notificacion, Abrir: false })}
       />
-      <CardHeader
-        variant="gradient"
-        color="transparent"
-        className="mb-4 grid h-18 place-items-center shadow-none  "
-      >
-        <Typography variant="h3" color=" black">
-          Inicio Sesión
-        </Typography>
-      </CardHeader>
-      <CardBody className="flex flex-col gap-4">
-        <form
-          className="flex flex-col gap-4"
-          //onSubmit={Crear_categoria}
-          id="formularioInicioSesion"
-          onSubmit={InicioSesion}
-        >
-          <Input
-            label="Nombre de usuario"
-            size="lg"
-            name="nombre_usuario"
-            onChange={HandleChange}
+      {/* NAVBAR */}
+      <nav className="  shadow-none bg-green-900 border-orange-600 border-4  rounded-none">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
+          <Image
+            src="/img/Home/uteq_logo3.png"
+            width={150}
+            height={100}
+            alt="Flowbite Logo"
           />
-          <Input
-            label="Contraseña"
-            size="lg"
-            name="contrasenia"
-            type="password"
-            onChange={HandleChange}
-          />
-        </form>
-      </CardBody>
-      <CardFooter className="pt-0">
-        <Button
-          variant="gradient"
-          fullWidth
-          type="submit"
-          form="formularioInicioSesion"
-          color="blue"
+          <div>
+            <a href="/Acerca">
+              <div
+                className=" h-auto hover:bg-yellow-400 bg-white  flex items-center justify-center mt-4 cursor-pointer text-center rounded-none mx-auto w-full border-4 border-solid border-orange-500 "
+                //onClick={loginG}
+              >
+                <div className=" font-bold text-black p-3 ">Acerca de</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </nav>
+      {/* NUEVO LOGIN */}
+      <Card className="w-full max-w-[48rem]  flex-row mx-auto mt-20 rounded-none shadow-none border-4 border-orange-600">
+        <CardHeader
+          shadow={false}
+          floated={false}
+          className="m-0 w-2/5 shrink-0 rounded-r-none p-10"
         >
-          Continuar
-        </Button>
-        {/*
-        <Typography variant="small" className="mt-6 flex justify-center">
-          ¿No tienes una cuenta?
-          <Typography
-            as="a"
-            href="#signup"
-            variant="small"
-            color="blue-gray"
-            className="ml-1 font-bold"
+          <Image
+            src="/img/Home/logo.png"
+            alt="card-image"
+            width={250}
+            height={250}
+          />
+        </CardHeader>
+        <CardBody className="w-full">
+          <form
+            className="flex flex-col gap-4"
+            //onSubmit={Crear_categoria}
+            id="formularioInicioSesion"
+            onSubmit={InicioSesion}
           >
-            crear cuenta
-          </Typography>
-        </Typography>
- */}
-      </CardFooter>
-    </Card>
+            <Typography variant="h3" color="black">
+              Inicio Sesión
+            </Typography>
+            <Input
+              label="Nombre de usuario"
+              size="lg"
+              name="nombre_usuario"
+              onChange={HandleChange}
+            />
+            <div className="flex">
+              <Input
+                label="Contraseña"
+                size="lg"
+                name="contrasenia"
+                type={VerContra ? "text" : "password"}
+                //type="password"
+                onChange={HandleChange}
+              />
+
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                onClick={() => setVerContra(!VerContra)}
+              >
+                {VerContra ? (
+                  <EyeSlashIcon
+                    strokeWidth={3}
+                    className="h-8 w-8 text-blue-gray-500"
+                  />
+                ) : (
+                  <EyeIcon
+                    strokeWidth={3}
+                    className="h-8 w-8 text-blue-gray-500"
+                  />
+                )}
+              </IconButton>
+            </div>
+
+            <Button
+              variant="gradient"
+              fullWidth
+              type="submit"
+              form="formularioInicioSesion"
+              color="red"
+              //className="w-7/12 mx-auto"
+            >
+              Continuar
+            </Button>
+          </form>
+        </CardBody>
+        <CardFooter className="pt-0">
+          {/*
+       <Typography variant="small" className="mt-6 flex justify-center">
+         ¿No tienes una cuenta?
+         <Typography
+           as="a"
+           href="#signup"
+           variant="small"
+           color="blue-gray"
+           className="ml-1 font-bold"
+         >
+           crear cuenta
+         </Typography>
+       </Typography>
+*/}
+        </CardFooter>
+      </Card>
+      {/* FOOTER  */}
+    </div>
   );
 }

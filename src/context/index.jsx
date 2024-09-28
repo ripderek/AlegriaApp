@@ -84,7 +84,7 @@ export function MaterialTailwindControllerProvider({ children }) {
     sidenavColor: "orange",
     sidenavType: "white",
     transparentNavbar: true,
-    fixedNavbar: false,
+    fixedNavbar: true,
     openConfigurator: false,
     change_type_bar: false,
     effect_panel: "Izquierdo",
